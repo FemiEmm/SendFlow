@@ -109,229 +109,371 @@ const copyCode = async () => {
 </script>
 
 <template>
-  <section class="card">
-    <h2 class="title">Send files</h2>
+  <section class="card send-panel">
+    <div class="send-panel-content">
+      <div class="send-panel-header">
+        <h2 class="title">Send files</h2>
 
-    <p class="subtitle">
-      Upload files and generate a transfer code.
-    </p>
+        <p class="subtitle">
+          Upload files and generate a transfer code.
+        </p>
+      </div>
 
-    <div
-      v-if="uploadSuccess"
-      class="success-card section-spacing"
-    >
       <div
-        ref="checkmarkContainer"
-        class="checkmark-animation"
-      ></div>
-
-      <h3>Upload complete</h3>
-
-      <p>Your files are ready to receive.</p>
-    </div>
-
-    <label class="upload-box section-spacing">
-      <font-awesome-icon icon="upload" />
-
-      <span>Choose files</span>
-
-      <input
-        type="file"
-        multiple
-        hidden
-        @change="handleFileSelect"
-      />
-    </label>
-
-    <div class="section-spacing">
-      <div
-        v-if="selectedFiles.length"
-        class="file-list"
+        v-if="uploadSuccess"
+        class="success-card"
       >
         <div
-          v-for="(file, index) in selectedFiles"
-          :key="`${file.name}-${file.size}-${index}`"
-          class="file-item"
+          ref="checkmarkContainer"
+          class="checkmark-animation"
+        ></div>
+
+        <h3>Upload complete</h3>
+
+        <p>Your files are ready to receive.</p>
+      </div>
+
+      <label class="upload-box">
+        <font-awesome-icon icon="upload" />
+
+        <span>Choose files</span>
+
+        <input
+          type="file"
+          multiple
+          hidden
+          @change="handleFileSelect"
+        />
+      </label>
+
+      <div class="file-area">
+        <div
+          v-if="selectedFiles.length"
+          class="file-list"
         >
-          <div>
-            <strong>{{ file.name }}</strong>
-
-            <p>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</p>
-          </div>
-
-          <button
-            type="button"
-            class="remove-button"
-            @click="removeFile(index)"
+          <div
+            v-for="(file, index) in selectedFiles"
+            :key="`${file.name}-${file.size}-${index}`"
+            class="file-item"
           >
-            <font-awesome-icon icon="xmark" />
-          </button>
+            <div class="file-text">
+              <strong>{{ file.name }}</strong>
+
+              <p>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</p>
+            </div>
+
+            <button
+              type="button"
+              class="remove-button"
+              @click="removeFile(index)"
+            >
+              <font-awesome-icon icon="xmark" />
+            </button>
+          </div>
         </div>
+
+        <p
+          v-else-if="!uploadSuccess"
+          class="empty-text"
+        >
+          No files selected yet.
+        </p>
       </div>
 
       <p
-        v-else-if="!uploadSuccess"
-        class="empty-text"
+        v-if="errorMessage"
+        class="error-text"
       >
-        No files selected yet.
+        {{ errorMessage }}
       </p>
-    </div>
 
-    <p
-      v-if="errorMessage"
-      class="error-text section-spacing"
-    >
-      {{ errorMessage }}
-    </p>
+      <div class="panel-actions">
+        <BaseButton
+          type="button"
+          :disabled="uploadLoading"
+          @click="uploadFiles"
+        >
+          {{ uploadLoading ? 'Uploading...' : 'Generate Code' }}
+        </BaseButton>
+      </div>
 
-    <div class="section-spacing">
-      <BaseButton
-        type="button"
-        :disabled="uploadLoading"
-        @click="uploadFiles"
+      <div
+        v-if="uploadSuccess"
+        class="code-card"
       >
-        {{ uploadLoading ? 'Uploading...' : 'Generate Code' }}
-      </BaseButton>
-    </div>
+        <p>Your transfer code</p>
 
-    <div
-      v-if="uploadSuccess"
-      class="code-card section-spacing"
-    >
-      <p>Your transfer code</p>
+        <strong>{{ transferCode }}</strong>
 
-      <strong>{{ transferCode }}</strong>
+        <button
+          type="button"
+          class="copy-button"
+          @click="copyCode"
+        >
+          <font-awesome-icon icon="copy" />
 
-      <button
-        type="button"
-        class="copy-button"
-        @click="copyCode"
-      >
-        <font-awesome-icon icon="copy" />
-
-        {{ copied ? 'Copied' : 'Copy code' }}
-      </button>
+          {{ copied ? 'Copied' : 'Copy code' }}
+        </button>
+      </div>
     </div>
   </section>
 </template>
 
 <style scoped>
+.send-panel {
+  height: min(580px, calc(100svh - 180px));
+  max-height: 680px;
+  overflow: hidden;
+}
+
+.send-panel-content {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.send-panel-header {
+  flex-shrink: 0;
+}
+
 .upload-box {
-  min-height: 150px;
+  min-height: 126px;
+
   background: var(--primary-light);
+
   border: 1.5px dashed var(--border-color);
+
   border-radius: var(--radius-md);
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+
+  gap: 10px;
+
   font-weight: 800;
+
   cursor: pointer;
+
+  flex-shrink: 0;
 }
 
 .upload-box svg {
-  font-size: 2rem;
+  font-size: 1.8rem;
+
   color: var(--primary-dark);
+}
+
+.file-area {
+  min-height: 74px;
+
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding-right: 4px;
 }
 
 .file-list {
   display: flex;
+
   flex-direction: column;
-  gap: 12px;
+
+  gap: 10px;
 }
 
 .file-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px;
+
+  gap: 12px;
+
+  padding: 12px;
+
   border: 1.5px solid var(--border-color);
+
   border-radius: var(--radius-sm);
+
   background: var(--card-color);
+}
+
+.file-text {
+  min-width: 0;
+}
+
+.file-text strong {
+  display: block;
+
+  max-width: 100%;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+
+  font-size: 0.88rem;
 }
 
 .file-item p {
   margin-top: 4px;
-  font-size: 0.85rem;
+
+  font-size: 0.75rem;
+
   color: var(--text-light);
 }
 
 .remove-button {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
+
   border: 1.5px solid var(--border-color);
+
   border-radius: 50%;
+
   background: var(--card-color);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-shrink: 0;
 }
 
 .empty-text {
   color: var(--text-light);
+
   font-weight: 600;
+
+  font-size: 0.85rem;
 }
 
 .error-text {
   color: var(--error-color);
+
   font-weight: 700;
+
+  font-size: 0.85rem;
+
+  flex-shrink: 0;
+}
+
+.panel-actions {
+  flex-shrink: 0;
 }
 
 .success-card {
-  padding: 18px;
+  padding: 14px;
+
   background: var(--primary-light);
+
   border: 1.5px solid var(--border-color);
+
   border-radius: var(--radius-md);
+
   text-align: center;
+
+  flex-shrink: 0;
 }
 
 .checkmark-animation {
-  width: 90px;
-  height: 90px;
-  margin: 0 auto 8px;
+  width: 64px;
+  height: 64px;
+
+  margin: 0 auto 4px;
 }
 
 .success-card h3 {
-  font-size: 1.2rem;
+  font-size: 1rem;
+
   font-weight: 800;
 }
 
 .success-card p {
-  margin-top: 6px;
+  margin-top: 4px;
+
   color: var(--text-light);
+
+  font-size: 0.8rem;
+
   font-weight: 600;
 }
 
 .code-card {
-  padding: 18px;
+  padding: 14px;
+
   background: var(--primary-light);
+
   border: 1.5px solid var(--border-color);
+
   border-radius: var(--radius-md);
+
   text-align: center;
+
+  flex-shrink: 0;
 }
 
 .code-card p {
   color: var(--text-light);
+
+  font-size: 0.78rem;
+
   font-weight: 700;
 }
 
 .code-card strong {
   display: block;
-  margin-top: 10px;
-  font-size: 2.5rem;
+
+  margin-top: 6px;
+
+  font-size: 2rem;
+
   letter-spacing: 8px;
 }
 
 .copy-button {
-  margin-top: 18px;
-  padding: 12px 18px;
+  margin-top: 12px;
+
+  padding: 10px 16px;
+
   background: var(--card-color);
+
   border: 1.5px solid var(--border-color);
+
   border-radius: 999px;
+
+  font-size: 0.82rem;
+
   font-weight: 800;
+
   display: inline-flex;
   align-items: center;
+
   gap: 8px;
+}
+
+@media (max-width: 1024px) {
+  .send-panel {
+    height: auto;
+    max-height: none;
+  }
+
+  .file-area {
+    max-height: 220px;
+  }
+}
+
+@media (max-width: 640px) {
+  .upload-box {
+    min-height: 110px;
+  }
+
+  .file-area {
+    max-height: 180px;
+  }
 }
 </style>

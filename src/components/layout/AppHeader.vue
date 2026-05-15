@@ -1,4 +1,6 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+
 defineProps({
   modelValue: {
     type: String,
@@ -8,9 +10,29 @@ defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
+const isDarkMode = ref(false)
+
 const setTab = (tab) => {
   emit('update:modelValue', tab)
 }
+
+const applyTheme = () => {
+  document.documentElement.classList.toggle('dark-mode', isDarkMode.value)
+  localStorage.setItem('sendnext-theme', isDarkMode.value ? 'dark' : 'light')
+}
+
+const toggleTheme = () => {
+  isDarkMode.value = !isDarkMode.value
+  applyTheme()
+}
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem('sendnext-theme')
+
+  isDarkMode.value = savedTheme === 'dark'
+
+  applyTheme()
+})
 </script>
 
 <template>
@@ -20,7 +42,7 @@ const setTab = (tab) => {
         <font-awesome-icon icon="paper-plane" />
       </div>
 
-      <span>SendFlow</span>
+      <span>Sendnest</span>
     </div>
 
     <nav class="nav-links">
@@ -46,8 +68,12 @@ const setTab = (tab) => {
     </nav>
 
     <div class="nav-actions">
-      <button class="utility-button">
-        <font-awesome-icon icon="moon" />
+      <button
+        class="utility-button"
+        type="button"
+        @click="toggleTheme"
+      >
+        <font-awesome-icon icon="power-off" />
       </button>
     </div>
   </header>

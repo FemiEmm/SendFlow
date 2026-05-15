@@ -10,7 +10,8 @@ import {
   faXmark,
   faPaperPlane,
   faMoon,
-  faFile
+  faFile,
+  faPowerOff
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -23,5 +24,6 @@ library.add(
   faXmark,
   faPaperPlane,
   faMoon,
-  faFile
+  faFile,
+  faPowerOff
 )

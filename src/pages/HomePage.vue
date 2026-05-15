@@ -6,6 +6,23 @@ import SendPanel from '../components/send/SendPanel.vue'
 import ReceivePanel from '../components/receive/ReceivePanel.vue'
 
 const activeTab = ref('send')
+const shareCopied = ref(false)
+
+const shareApp = async () => {
+  const shareData = {
+    title: 'Sendnext',
+    text: 'Send files between devices with a simple transfer code.',
+    url: window.location.href
+  }
+
+  if (navigator.share) {
+    await navigator.share(shareData)
+    return
+  }
+
+  await navigator.clipboard.writeText(window.location.href)
+  shareCopied.value = true
+}
 </script>
 
 <template>
@@ -30,43 +47,79 @@ const activeTab = ref('send')
 
         <div class="hero-image">
           <img
-            src="/images/hero-transfer.jpg"
+            src="/images/hero-transfer.png"
             alt="File transfer between devices"
           />
         </div>
       </section>
     </main>
+
+    <footer class="app-footer">
+      <div class="footer-share">
+        <div class="footer-icon">
+          <font-awesome-icon icon="share" />
+        </div>
+
+        <div>
+          <h3>Share with friends</h3>
+
+          <p>
+            Send this app link to someone who needs simple file transfer.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="footer-button"
+          @click="shareApp"
+        >
+          <font-awesome-icon icon="share" />
+
+          <span>{{ shareCopied ? 'Copied' : 'Share app' }}</span>
+        </button>
+      </div>
+
+      <div class="footer-disclaimer">
+        <div class="footer-icon">
+          <font-awesome-icon icon="circle-info" />
+        </div>
+
+        <div>
+          <h3>Simple transfer notice</h3>
+
+          <p>
+            Files use temporary transfer codes. Only share codes with people you trust.
+          </p>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
 <style scoped>
 .homepage {
-  min-height: 100vh;
-
+  min-height: 100svh;
   background: var(--bg-color);
+
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
 .homepage-grid {
   width: 100%;
+  min-height: 0;
 
-  min-height: calc(100vh - 74px);
-
-  padding: 56px 72px;
+  padding: clamp(20px, 4vh, 42px) clamp(32px, 5vw, 72px);
 
   display: grid;
-
-  grid-template-columns: 1fr 1fr;
-
+  grid-template-columns: minmax(320px, 0.95fr) minmax(320px, 1.05fr);
   align-items: center;
-
-  gap: 56px;
+  gap: clamp(28px, 4vw, 56px);
 }
 
 .function-column {
   width: 100%;
-
   display: flex;
-
   justify-content: center;
 }
 
@@ -74,71 +127,139 @@ const activeTab = ref('send')
   width: 100%;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: center;
 }
 
 .hero-copy {
   width: 100%;
-
   max-width: 520px;
 
-  margin-bottom: 32px;
+  margin-bottom: clamp(16px, 3vh, 28px);
 }
 
 .hero-copy h1 {
-  font-size: 3rem;
-
-  line-height: 1.12;
-
+  font-size: clamp(2.15rem, 4vw, 3rem);
+  line-height: 1.08;
   font-weight: 800;
-
   color: var(--text-color);
 }
 
 .hero-copy p {
   max-width: 430px;
 
-  margin-top: 20px;
+  margin-top: 14px;
 
-  font-size: 1.1rem;
-
-  line-height: 1.6;
-
+  font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+  line-height: 1.5;
   color: var(--text-light);
 }
 
 .hero-image {
   width: 100%;
-
-  max-width: 520px;
+  max-width: 500px;
 
   display: flex;
-
   justify-content: center;
 }
 
 .hero-image img {
   width: 100%;
-
-  max-width: 360px;
-
+  max-width: clamp(240px, 26vw, 340px);
   object-fit: contain;
 }
 
-@media (max-width: 900px) {
-  .homepage-grid {
-    min-height: auto;
+.app-footer {
+  margin: 0 clamp(32px, 5vw, 72px) clamp(18px, 3vh, 28px);
 
-    padding: 36px 24px 56px;
+  padding: 16px;
+
+  background: var(--card-color);
+
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-lg);
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+
+  box-shadow: var(--shadow-sm);
+}
+
+.footer-share,
+.footer-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-icon {
+  width: 42px;
+  height: 42px;
+
+  background: var(--primary-light);
+
+  border: 1.5px solid var(--border-color);
+  border-radius: 14px;
+
+  color: var(--primary-dark);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+}
+
+.footer-share h3,
+.footer-disclaimer h3 {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-color);
+}
+
+.footer-share p,
+.footer-disclaimer p {
+  margin-top: 3px;
+
+  font-size: 0.74rem;
+  line-height: 1.35;
+  color: var(--text-light);
+}
+
+.footer-button {
+  margin-left: auto;
+
+  padding: 10px 14px;
+
+  background: var(--primary-color);
+
+  border: 1.5px solid var(--border-color);
+  border-radius: 999px;
+
+  color: #ffffff;
+
+  font-size: 0.76rem;
+  font-weight: 800;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  white-space: nowrap;
+}
+
+@media (max-width: 1024px) {
+  .homepage {
+    min-height: 100svh;
+  }
+
+  .homepage-grid {
+    padding: 32px 32px 42px;
 
     grid-template-columns: 1fr;
-
-    gap: 40px;
+    gap: 34px;
   }
 
   .function-column {
@@ -150,15 +271,60 @@ const activeTab = ref('send')
   }
 
   .hero-copy {
-    margin-bottom: 24px;
+    text-align: center;
+    margin-bottom: 22px;
   }
 
-  .hero-copy h1 {
-    font-size: 2.35rem;
+  .hero-copy p {
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-image img {
-    max-width: 300px;
+    max-width: 280px;
+  }
+
+  .app-footer {
+    margin: 0 32px 28px;
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .homepage {
+    min-height: 100svh;
+    display: block;
+  }
+
+  .homepage-grid {
+    padding: 26px 18px 34px;
+    gap: 28px;
+  }
+
+  .hero-copy h1 {
+    font-size: 2rem;
+  }
+
+  .hero-copy p {
+    font-size: 0.92rem;
+  }
+
+  .hero-image img {
+    max-width: 220px;
+  }
+
+  .app-footer {
+    margin: 0 18px 24px;
+    padding: 14px;
+  }
+
+  .footer-share,
+  .footer-disclaimer {
+    align-items: flex-start;
+  }
+
+  .footer-button {
+    margin-left: 0;
   }
 }
 </style>

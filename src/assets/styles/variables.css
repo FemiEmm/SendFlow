@@ -1,0 +1,25 @@
+:root {
+  --bg-color: #eeeeee;
+  --card-color: #ffffff;
+
+  --primary-color: #c084fc;
+  --primary-dark: #a855f7;
+  --primary-light: #f3d7ff;
+
+  --text-color: #111111;
+  --text-light: #6b7280;
+
+  --border-color: #1f1f1f;
+
+  --success-color: #22c55e;
+  --error-color: #ef4444;
+
+  --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 18px 35px rgba(0, 0, 0, 0.08);
+
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+
+  --transition: 0.25s ease;
+}

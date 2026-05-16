@@ -3,7 +3,6 @@ import { computed, nextTick, ref } from 'vue'
 import lottie from 'lottie-web'
 
 import { supabase } from '../../services/supabase'
-
 import BaseButton from '../ui/BaseButton.vue'
 import FileSizeBar from './FileSizeBar.vue'
 
@@ -34,7 +33,6 @@ const isOverSizeLimit = computed(() => {
 
 const generateCode = () => {
   const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
-
   let code = ''
 
   for (let i = 0; i < 4; i++) {
@@ -113,9 +111,7 @@ const uploadFiles = async () => {
   }
 
   if (isOverSizeLimit.value) {
-    errorMessage.value =
-      'File too large. Reduce file size or get the paid version.'
-
+    errorMessage.value = 'File too large. Reduce file size or get the paid version.'
     return
   }
 
@@ -151,8 +147,7 @@ const uploadFiles = async () => {
   } catch (error) {
     stopPlaneAnimation()
 
-    errorMessage.value =
-      error.message || 'Upload failed. Please try again.'
+    errorMessage.value = error.message || 'Upload failed. Please try again.'
   } finally {
     uploadLoading.value = false
   }
@@ -171,12 +166,27 @@ const copyCode = async () => {
   <div class="send-layout">
     <section class="card send-panel">
       <div class="send-panel-content">
-        <div class="send-panel-header">
-          <h2 class="title">Send files</h2>
+        <div class="send-top-row">
+          <div class="send-panel-header">
+            <h2 class="title">Send files</h2>
 
-          <p class="subtitle">
-            Upload files and generate a transfer code.
-          </p>
+            <p class="subtitle">
+              Upload files and generate a transfer code.
+            </p>
+          </div>
+
+          <label class="upload-button">
+            <font-awesome-icon icon="upload" />
+
+            <span>Choose files</span>
+
+            <input
+              type="file"
+              multiple
+              hidden
+              @change="handleFileSelect"
+            />
+          </label>
         </div>
 
         <div
@@ -210,19 +220,6 @@ const copyCode = async () => {
             <p>Your files are ready to receive.</p>
           </div>
         </div>
-
-        <label class="upload-box">
-          <font-awesome-icon icon="upload" />
-
-          <span>Choose files</span>
-
-          <input
-            type="file"
-            multiple
-            hidden
-            @change="handleFileSelect"
-          />
-        </label>
 
         <FileSizeBar
           :files="selectedFiles"
@@ -339,279 +336,215 @@ const copyCode = async () => {
 <style scoped>
 .send-layout {
   width: 100%;
-
   display: flex;
   flex-direction: column;
-
   gap: 18px;
 }
 
 .send-panel {
   height: min(500px, calc(100svh - 300px));
-
   min-height: 390px;
-
   overflow: hidden;
 }
 
 .send-panel-content {
   height: 100%;
-
   display: flex;
   flex-direction: column;
-
   gap: 14px;
 }
 
+.send-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
 .send-panel-header {
+  flex: 1;
+  min-width: 0;
+}
+
+.upload-button {
+  height: 52px;
+  padding: 0 20px;
+  background: var(--primary-light);
+  border: 1.5px solid var(--border-color);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 800;
+  color: var(--text-color);
+  cursor: pointer;
   flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.upload-button:hover {
+  transform: translateY(-1px);
+}
+
+.upload-button svg {
+  font-size: 1rem;
+  color: var(--primary-dark);
 }
 
 .sending-card,
 .success-card {
   padding: 12px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-md);
-
   display: flex;
   align-items: center;
-
   gap: 14px;
-
   flex-shrink: 0;
 }
 
 .plane-animation {
-  width: 96px;
-  height: 96px;
-
+  width: 156px;
+  height: 156px;
   flex-shrink: 0;
 }
 
 .checkmark-animation {
   width: 54px;
   height: 54px;
-
   flex-shrink: 0;
 }
 
 .sending-card h3,
 .success-card h3 {
   font-size: 0.95rem;
-
   font-weight: 800;
 }
 
 .sending-card p,
 .success-card p {
   margin-top: 3px;
-
   color: var(--text-light);
-
   font-size: 0.76rem;
-
   font-weight: 600;
-}
-
-.upload-box {
-  min-height: 118px;
-
-  background: var(--primary-light);
-
-  border: 1.5px dashed var(--border-color);
-
-  border-radius: var(--radius-md);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 10px;
-
-  font-weight: 800;
-
-  cursor: pointer;
-
-  flex-shrink: 0;
-}
-
-.upload-box svg {
-  font-size: 1.8rem;
-
-  color: var(--primary-dark);
 }
 
 .file-area {
   flex: 1;
-
   min-height: 0;
-
   overflow-y: auto;
-
   padding-right: 4px;
 }
 
 .file-list {
   display: flex;
-
   flex-direction: column;
-
   gap: 10px;
 }
 
 .file-item {
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
-
   gap: 12px;
-
   padding: 12px;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-sm);
-
   background: var(--card-color);
-
   min-width: 0;
-
   overflow: hidden;
 }
 
 .file-text {
   min-width: 0;
-
   max-width: 100%;
-
   flex: 1;
 }
 
 .file-text strong {
   display: block;
-
   width: 100%;
-
   overflow: hidden;
-
   white-space: nowrap;
-
   text-overflow: ellipsis;
-
   font-size: 0.88rem;
 }
 
 .file-item p {
   margin-top: 4px;
-
   font-size: 0.75rem;
-
   color: var(--text-light);
 }
 
 .remove-button {
   width: 32px;
   height: 32px;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 50%;
-
   background: var(--card-color);
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   flex-shrink: 0;
 }
 
 .remove-button:disabled {
   opacity: 0.5;
-
   cursor: not-allowed;
 }
 
 .empty-text {
   color: var(--text-light);
-
   font-weight: 600;
-
   font-size: 0.85rem;
 }
 
 .error-text {
   color: var(--error-color);
-
   font-weight: 700;
-
   font-size: 0.85rem;
-
   flex-shrink: 0;
 }
 
 .code-panel {
   padding: 16px;
-
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-
   gap: 18px;
 }
 
 .code-panel-left {
   display: flex;
   align-items: center;
-
   gap: 12px;
-
   min-width: 0;
 }
 
 .code-icon {
   width: 44px;
   height: 44px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 14px;
-
   color: var(--primary-dark);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   flex-shrink: 0;
 }
 
 .code-panel-left h3 {
   font-size: 0.95rem;
-
   font-weight: 800;
-
   color: var(--text-color);
 }
 
 .code-panel-left p {
   margin-top: 3px;
-
   font-size: 0.76rem;
-
   color: var(--text-light);
-
   line-height: 1.35;
 }
 
@@ -622,40 +555,27 @@ const copyCode = async () => {
 .code-display {
   display: flex;
   align-items: center;
-
   gap: 12px;
 }
 
 .code-display strong {
   padding: 10px 14px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-sm);
-
   font-size: 1.5rem;
-
   letter-spacing: 6px;
 }
 
 .copy-button {
   padding: 11px 15px;
-
   background: var(--card-color);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 999px;
-
   font-size: 0.82rem;
-
   font-weight: 800;
-
   display: inline-flex;
   align-items: center;
-
   gap: 8px;
 }
 
@@ -675,17 +595,22 @@ const copyCode = async () => {
     min-height: auto;
   }
 
+  .send-top-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .upload-button {
+    width: 100%;
+  }
+
   .sending-card {
     align-items: center;
   }
 
   .plane-animation {
-    width: 82px;
-    height: 82px;
-  }
-
-  .upload-box {
-    min-height: 110px;
+    width: 100px;
+    height: 100px;
   }
 
   .file-area {

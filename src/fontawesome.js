@@ -17,9 +17,14 @@ import {
   faMagnifyingGlass,
   faFolderOpen,
    faCircleInfo,
-   faShareNodes
+   faShareNodes,
+   faEnvelope
 
 } from '@fortawesome/free-solid-svg-icons'
+
+import {
+  faInstagram
+} from '@fortawesome/free-brands-svg-icons'
 
 library.add(
   faUpload,
@@ -38,5 +43,7 @@ library.add(
   faMagnifyingGlass,
   faFolderOpen,
    faCircleInfo,
-   faShareNodes
+   faShareNodes,
+   faEnvelope,
+     faInstagram
 )

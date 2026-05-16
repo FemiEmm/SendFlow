@@ -12,6 +12,7 @@ import ReceivePanel from '../components/receive/ReceivePanel.vue'
 import HelpPanel from '../components/help/HelpPanel.vue'
 import AboutPanel from '../components/help/AboutPanel.vue'
 
+defineEmits(['open-sendnext'])
 const activeTab = ref('send')
 const shareCopied = ref(false)
 
@@ -59,7 +60,10 @@ const shareApp = async () => {
 
 <template>
   <div class="homepage">
-    <AppHeader v-model="activeTab" />
+    <AppHeader
+  v-model="activeTab"
+  @open-sendnext="$emit('open-sendnext')"
+/>
 
     <main class="homepage-grid">
       <section class="function-column">
@@ -134,15 +138,15 @@ const shareApp = async () => {
 
 <style scoped>
 .homepage {
-  min-height: 100svh;
-
+  max-height: 100svh;
   background: var(--bg-color);
-
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .homepage-grid {
+  flex: 1;
+
   width: 100%;
 
   min-height: 0;

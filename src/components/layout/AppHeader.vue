@@ -8,7 +8,7 @@ defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'open-sendnext'])
 
 const isDarkMode = ref(false)
 
@@ -42,17 +42,19 @@ onMounted(() => {
 
 <template>
   <header class="app-header">
-    <div class="header-left">
-      <div class="brand">
-        <img
-          class="brand-logo"
-          src="/Logo/SendNest.svg"
-          alt="Sendnest logo"
-        />
+  <button
+  class="brand brand-button"
+  type="button"
+  @click="emit('open-sendnext')"
+>
+  <img
+    class="brand-logo"
+    src="/Logo/SendNest.svg"
+    alt="Sendnest logo"
+  />
 
-        <span>SendNest</span>
-      </div>
-    </div>
+  <span>Sendnest</span>
+</button>
 
     <nav class="header-middle nav-links">
       <button
@@ -116,6 +118,12 @@ onMounted(() => {
   padding: 0px 70px;
 
   border-bottom: 1.5px solid var(--border-color);
+}
+.brand-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .header-left {

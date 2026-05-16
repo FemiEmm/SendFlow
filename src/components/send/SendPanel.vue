@@ -3,6 +3,7 @@ import { computed, nextTick, ref } from 'vue'
 import lottie from 'lottie-web'
 
 import { supabase } from '../../services/supabase'
+
 import BaseButton from '../ui/BaseButton.vue'
 import FileSizeBar from './FileSizeBar.vue'
 
@@ -33,6 +34,7 @@ const isOverSizeLimit = computed(() => {
 
 const generateCode = () => {
   const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+
   let code = ''
 
   for (let i = 0; i < 4; i++) {
@@ -95,7 +97,9 @@ const handleFileSelect = (event) => {
 }
 
 const removeFile = (index) => {
-  selectedFiles.value = selectedFiles.value.filter((_, fileIndex) => fileIndex !== index)
+  selectedFiles.value = selectedFiles.value.filter(
+    (_, fileIndex) => fileIndex !== index
+  )
 
   transferCode.value = ''
   uploadSuccess.value = false
@@ -109,7 +113,9 @@ const uploadFiles = async () => {
   }
 
   if (isOverSizeLimit.value) {
-    errorMessage.value = 'File too large. Reduce file size or get the paid version.'
+    errorMessage.value =
+      'File too large. Reduce file size or get the paid version.'
+
     return
   }
 
@@ -145,7 +151,8 @@ const uploadFiles = async () => {
   } catch (error) {
     stopPlaneAnimation()
 
-    errorMessage.value = error.message || 'Upload failed. Please try again.'
+    errorMessage.value =
+      error.message || 'Upload failed. Please try again.'
   } finally {
     uploadLoading.value = false
   }
@@ -233,9 +240,17 @@ const copyCode = async () => {
               class="file-item"
             >
               <div class="file-text">
-                <strong>{{ file.name }}</strong>
+                <strong :title="file.name">
+                  {{
+                    file.name.length > 20
+                      ? `${file.name.slice(0, 20)}...`
+                      : file.name
+                  }}
+                </strong>
 
-                <p>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</p>
+                <p>
+                  {{ (file.size / 1024 / 1024).toFixed(2) }} MB
+                </p>
               </div>
 
               <button
@@ -332,7 +347,7 @@ const copyCode = async () => {
 }
 
 .send-panel {
-  height: min(520px, calc(100svh - 300px));
+  height: min(500px, calc(100svh - 300px));
 
   min-height: 390px;
 
@@ -451,7 +466,9 @@ const copyCode = async () => {
 
 .file-item {
   display: flex;
+
   justify-content: space-between;
+
   align-items: center;
 
   gap: 12px;
@@ -463,16 +480,24 @@ const copyCode = async () => {
   border-radius: var(--radius-sm);
 
   background: var(--card-color);
+
+  min-width: 0;
+
+  overflow: hidden;
 }
 
 .file-text {
   min-width: 0;
+
+  max-width: 100%;
+
+  flex: 1;
 }
 
 .file-text strong {
   display: block;
 
-  max-width: 100%;
+  width: 100%;
 
   overflow: hidden;
 
@@ -502,7 +527,9 @@ const copyCode = async () => {
   background: var(--card-color);
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   flex-shrink: 0;

@@ -11,7 +11,9 @@ import {
   faPaperPlane,
   faMoon,
   faFile,
-  faPowerOff
+  faPowerOff,
+  faFileZipper
+
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -25,5 +27,6 @@ library.add(
   faPaperPlane,
   faMoon,
   faFile,
-  faPowerOff
+  faPowerOff,
+  faFileZipper
 )

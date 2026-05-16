@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue'
+import JSZip from 'jszip'
+
 import { supabase } from '../../services/supabase'
 import BaseButton from '../ui/BaseButton.vue'
 
@@ -36,9 +38,7 @@ const fetchFiles = async () => {
       .from('sendflow-files')
       .list(transferCode.value)
 
-    if (error) {
-      throw error
-    }
+    if (error) throw error
 
     if (!data || !data.length) {
       errorMessage.value = 'No files found for this code.'
@@ -66,22 +66,31 @@ const fetchFiles = async () => {
   }
 }
 
+const downloadBlob = (blob, fileName) => {
+  const blobUrl = window.URL.createObjectURL(blob)
+
+  const link = document.createElement('a')
+  link.href = blobUrl
+  link.download = fileName
+
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+
+  window.URL.revokeObjectURL(blobUrl)
+}
+
 const downloadFile = async (file) => {
   try {
     const response = await fetch(file.url)
 
+    if (!response.ok) {
+      throw new Error('Download failed.')
+    }
+
     const blob = await response.blob()
-    const blobUrl = window.URL.createObjectURL(blob)
 
-    const link = document.createElement('a')
-    link.href = blobUrl
-    link.download = file.name
-
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-
-    window.URL.revokeObjectURL(blobUrl)
+    downloadBlob(blob, file.name)
 
     showDeletePrompt.value = true
   } catch (error) {
@@ -90,11 +99,39 @@ const downloadFile = async (file) => {
 }
 
 const downloadAllFiles = async () => {
-  for (const file of foundFiles.value) {
-    await downloadFile(file)
-  }
+  if (!foundFiles.value.length) return
 
-  showDeletePrompt.value = true
+  loading.value = true
+  errorMessage.value = ''
+  successMessage.value = ''
+
+  try {
+    const zip = new JSZip()
+
+    for (const file of foundFiles.value) {
+      const response = await fetch(file.url)
+
+      if (!response.ok) {
+        throw new Error(`Could not download ${file.name}`)
+      }
+
+      const blob = await response.blob()
+
+      zip.file(file.name, blob)
+    }
+
+    const zipBlob = await zip.generateAsync({
+      type: 'blob'
+    })
+
+    downloadBlob(zipBlob, `${transferCode.value}-sendnext-files.zip`)
+
+    showDeletePrompt.value = true
+  } catch (error) {
+    errorMessage.value = error.message || 'Could not create ZIP file.'
+  } finally {
+    loading.value = false
+  }
 }
 
 const deleteFiles = async () => {
@@ -111,9 +148,7 @@ const deleteFiles = async () => {
       .from('sendflow-files')
       .remove(filePaths)
 
-    if (error) {
-      throw error
-    }
+    if (error) throw error
 
     foundFiles.value = []
     transferCode.value = ''
@@ -205,9 +240,7 @@ const keepFiles = () => {
               <div class="file-text">
                 <strong>{{ file.name }}</strong>
 
-                <p>
-                  {{ (file.size / 1024 / 1024).toFixed(2) }} MB
-                </p>
+                <p>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</p>
               </div>
             </div>
 
@@ -223,11 +256,12 @@ const keepFiles = () => {
           <button
             type="button"
             class="download-all-button"
+            :disabled="loading"
             @click="downloadAllFiles"
           >
-            <font-awesome-icon icon="download" />
+            <font-awesome-icon icon="file-zipper" />
 
-            <span>Download all files</span>
+            <span>{{ loading ? 'Creating ZIP...' : 'Download as ZIP' }}</span>
           </button>
         </div>
 
@@ -252,7 +286,7 @@ const keepFiles = () => {
             <h3>Delete files now?</h3>
 
             <p>
-              Download complete. Remove files from SendFlow?
+              Download complete. Remove files from Sendnext?
             </p>
           </div>
         </div>
@@ -287,16 +321,13 @@ const keepFiles = () => {
 .receive-panel {
   height: min(480px, calc(100svh - 180px));
   max-height: 680px;
-
   overflow: hidden;
 }
 
 .receive-panel-content {
   height: 100%;
-
   display: flex;
   flex-direction: column;
-
   gap: 16px;
 }
 
@@ -304,48 +335,34 @@ const keepFiles = () => {
   display: flex;
   align-items: center;
   gap: 16px;
-
   flex-shrink: 0;
 }
 
 .panel-icon {
   width: 54px;
   height: 54px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 16px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: var(--primary-dark);
-
   font-size: 1.2rem;
-
   flex-shrink: 0;
 }
 
 .code-input {
   text-transform: uppercase;
-
   font-weight: 800;
-
   letter-spacing: 6px;
-
   text-align: center;
 }
 
 .file-area {
   flex: 1;
-
   min-height: 80px;
-
   overflow-y: auto;
-
   padding-right: 4px;
 }
 
@@ -359,15 +376,10 @@ const keepFiles = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   gap: 12px;
-
   padding: 12px;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-sm);
-
   background: var(--card-color);
 }
 
@@ -375,26 +387,19 @@ const keepFiles = () => {
   display: flex;
   align-items: center;
   gap: 12px;
-
   min-width: 0;
 }
 
 .file-icon {
   width: 42px;
   height: 42px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 12px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: var(--primary-dark);
-
   flex-shrink: 0;
 }
 
@@ -404,60 +409,40 @@ const keepFiles = () => {
 
 .file-text strong {
   display: block;
-
   max-width: 100%;
-
   overflow: hidden;
-
   white-space: nowrap;
-
   text-overflow: ellipsis;
-
   font-size: 0.88rem;
 }
 
 .file-item p {
   margin-top: 4px;
-
   font-size: 0.75rem;
-
   color: var(--text-light);
 }
 
 .download-button {
   width: 38px;
   height: 38px;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 50%;
-
   background: var(--primary-light);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: var(--text-color);
-
   flex-shrink: 0;
 }
 
 .download-all-button {
   width: 100%;
-
   padding: 12px 16px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-sm);
-
   font-size: 0.82rem;
-
   font-weight: 800;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -466,21 +451,15 @@ const keepFiles = () => {
 
 .empty-text {
   color: var(--text-light);
-
   font-weight: 600;
-
   font-size: 0.85rem;
 }
 
 .delete-prompt {
   padding: 14px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-md);
-
   flex-shrink: 0;
 }
 
@@ -493,59 +472,42 @@ const keepFiles = () => {
 .prompt-icon {
   width: 42px;
   height: 42px;
-
   background: #ffe4e6;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 14px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   color: var(--error-color);
-
   flex-shrink: 0;
 }
 
 .delete-prompt h3 {
   font-size: 0.95rem;
-
   font-weight: 800;
 }
 
 .delete-prompt p {
   margin-top: 4px;
-
   font-size: 0.78rem;
-
   color: var(--text-light);
-
   line-height: 1.45;
 }
 
 .delete-actions {
   margin-top: 14px;
-
   display: grid;
   grid-template-columns: 1fr 1fr;
-
   gap: 10px;
 }
 
 .delete-button,
 .keep-button {
   padding: 10px 14px;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-sm);
-
   font-size: 0.82rem;
-
   font-weight: 800;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -554,33 +516,25 @@ const keepFiles = () => {
 
 .delete-button {
   background: var(--error-color);
-
   color: white;
 }
 
 .keep-button {
   background: var(--card-color);
-
   color: var(--text-color);
 }
 
 .error-text {
   color: var(--error-color);
-
   font-weight: 700;
-
   font-size: 0.85rem;
-
   flex-shrink: 0;
 }
 
 .success-text {
   color: var(--success-color);
-
   font-weight: 700;
-
   font-size: 0.85rem;
-
   flex-shrink: 0;
 }
 

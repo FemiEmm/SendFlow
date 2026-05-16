@@ -27,6 +27,14 @@ const setTab = (tab) => {
     >
       Receive
     </button>
+
+    <button
+      class="nav-link"
+      :class="{ active: modelValue === 'help' }"
+      @click="setTab('help')"
+    >
+      Help
+    </button>
   </div>
 </template>
 

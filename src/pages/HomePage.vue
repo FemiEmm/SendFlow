@@ -1,12 +1,43 @@
 <script setup>
-import { ref } from 'vue'
+import {
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount
+} from 'vue'
 
 import AppHeader from '../components/layout/AppHeader.vue'
 import SendPanel from '../components/send/SendPanel.vue'
 import ReceivePanel from '../components/receive/ReceivePanel.vue'
+import HelpPanel from '../components/help/HelpPanel.vue'
+import AboutPanel from '../components/help/AboutPanel.vue'
 
 const activeTab = ref('send')
 const shareCopied = ref(false)
+
+const isMobile = ref(window.innerWidth <= 640)
+
+const handleResize = () => {
+  isMobile.value = window.innerWidth <= 640
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+const heroImage = computed(() => {
+  if (!isMobile.value) {
+    return '/images/hero-transfer.png'
+  }
+
+  return activeTab.value === 'send'
+    ? '/images/hero-transfer.png'
+    : '/images/hero-transfer-2.png'
+})
 
 const shareApp = async () => {
   const shareData = {
@@ -21,6 +52,7 @@ const shareApp = async () => {
   }
 
   await navigator.clipboard.writeText(window.location.href)
+
   shareCopied.value = true
 }
 </script>
@@ -34,6 +66,10 @@ const shareApp = async () => {
         <SendPanel v-if="activeTab === 'send'" />
 
         <ReceivePanel v-if="activeTab === 'receive'" />
+
+        <HelpPanel v-if="activeTab === 'help'" />
+
+        <AboutPanel v-if="activeTab === 'about'" />
       </section>
 
       <section class="hero-column">
@@ -47,7 +83,7 @@ const shareApp = async () => {
 
         <div class="hero-image">
           <img
-            src="/images/hero-transfer.png"
+            :src="heroImage"
             alt="File transfer between devices"
           />
         </div>
@@ -99,6 +135,7 @@ const shareApp = async () => {
 <style scoped>
 .homepage {
   min-height: 100svh;
+
   background: var(--bg-color);
 
   display: grid;
@@ -107,19 +144,25 @@ const shareApp = async () => {
 
 .homepage-grid {
   width: 100%;
+
   min-height: 0;
 
   padding: clamp(20px, 4vh, 42px) clamp(32px, 5vw, 72px);
 
   display: grid;
+
   grid-template-columns: minmax(320px, 0.95fr) minmax(320px, 1.05fr);
+
   align-items: center;
+
   gap: clamp(28px, 4vw, 56px);
 }
 
 .function-column {
   width: 100%;
+
   display: flex;
+
   justify-content: center;
 }
 
@@ -128,12 +171,14 @@ const shareApp = async () => {
 
   display: flex;
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
 }
 
 .hero-copy {
   width: 100%;
+
   max-width: 520px;
 
   margin-bottom: clamp(16px, 3vh, 28px);
@@ -141,8 +186,11 @@ const shareApp = async () => {
 
 .hero-copy h1 {
   font-size: clamp(2.15rem, 4vw, 3rem);
+
   line-height: 1.08;
+
   font-weight: 800;
+
   color: var(--text-color);
 }
 
@@ -152,22 +200,30 @@ const shareApp = async () => {
   margin-top: 14px;
 
   font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+
   line-height: 1.5;
+
   color: var(--text-light);
 }
 
 .hero-image {
   width: 100%;
+
   max-width: 500px;
 
   display: flex;
+
   justify-content: center;
 }
 
 .hero-image img {
   width: 100%;
+
   max-width: clamp(240px, 26vw, 340px);
+
   object-fit: contain;
+
+  transition: opacity 0.25s ease;
 }
 
 .app-footer {
@@ -178,10 +234,13 @@ const shareApp = async () => {
   background: var(--card-color);
 
   border: 1.5px solid var(--border-color);
+
   border-radius: var(--radius-lg);
 
   display: grid;
+
   grid-template-columns: 1fr 1fr;
+
   gap: 18px;
 
   box-shadow: var(--shadow-sm);
@@ -190,7 +249,9 @@ const shareApp = async () => {
 .footer-share,
 .footer-disclaimer {
   display: flex;
+
   align-items: center;
+
   gap: 12px;
 }
 
@@ -201,6 +262,7 @@ const shareApp = async () => {
   background: var(--primary-light);
 
   border: 1.5px solid var(--border-color);
+
   border-radius: 14px;
 
   color: var(--primary-dark);
@@ -215,7 +277,9 @@ const shareApp = async () => {
 .footer-share h3,
 .footer-disclaimer h3 {
   font-size: 0.9rem;
+
   font-weight: 800;
+
   color: var(--text-color);
 }
 
@@ -224,27 +288,33 @@ const shareApp = async () => {
   margin-top: 3px;
 
   font-size: 0.74rem;
+
   line-height: 1.35;
+
   color: var(--text-light);
 }
 
 .footer-button {
   margin-left: auto;
 
-  padding: 10px 14px;
+  padding: 10px 20px;
 
   background: var(--primary-color);
 
   border: 1.5px solid var(--border-color);
+
   border-radius: 999px;
 
   color: #ffffff;
 
   font-size: 0.76rem;
+
   font-weight: 800;
 
   display: flex;
+
   align-items: center;
+
   gap: 8px;
 
   white-space: nowrap;
@@ -259,6 +329,7 @@ const shareApp = async () => {
     padding: 32px 32px 42px;
 
     grid-template-columns: 1fr;
+
     gap: 34px;
   }
 
@@ -272,6 +343,7 @@ const shareApp = async () => {
 
   .hero-copy {
     text-align: center;
+
     margin-bottom: 22px;
   }
 
@@ -286,6 +358,7 @@ const shareApp = async () => {
 
   .app-footer {
     margin: 0 32px 28px;
+
     grid-template-columns: 1fr;
   }
 }
@@ -293,11 +366,13 @@ const shareApp = async () => {
 @media (max-width: 640px) {
   .homepage {
     min-height: 100svh;
+
     display: block;
   }
 
   .homepage-grid {
     padding: 26px 18px 34px;
+
     gap: 28px;
   }
 
@@ -315,15 +390,28 @@ const shareApp = async () => {
 
   .app-footer {
     margin: 0 18px 24px;
+
     padding: 14px;
   }
 
   .footer-share,
   .footer-disclaimer {
-    align-items: flex-start;
+    display: grid;
+
+    grid-template-columns: 42px 1fr;
+
+    align-items: start;
+
+    gap: 12px;
   }
 
   .footer-button {
+    grid-column: 1 / -1;
+
+    width: fit-content;
+
+    justify-self: center;
+
     margin-left: 0;
   }
 }

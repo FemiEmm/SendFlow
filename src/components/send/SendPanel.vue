@@ -4,7 +4,9 @@ import lottie from 'lottie-web'
 
 import { supabase } from '../../services/supabase'
 import BaseButton from '../ui/BaseButton.vue'
+
 import checkmarkAnimation from '../../assets/styles/animations/checkmark.json'
+import planeAnimation from '../../assets/styles/animations/paper-plane.json'
 
 const selectedFiles = ref([])
 const transferCode = ref('')
@@ -12,7 +14,11 @@ const uploadLoading = ref(false)
 const uploadSuccess = ref(false)
 const errorMessage = ref('')
 const copied = ref(false)
+
 const checkmarkContainer = ref(null)
+const planeContainer = ref(null)
+
+let planeInstance = null
 
 const generateCode = () => {
   const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
@@ -23,6 +29,29 @@ const generateCode = () => {
   }
 
   return code
+}
+
+const playPlaneAnimation = async () => {
+  await nextTick()
+
+  if (!planeContainer.value) return
+
+  planeContainer.value.innerHTML = ''
+
+  planeInstance = lottie.loadAnimation({
+    container: planeContainer.value,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    animationData: planeAnimation
+  })
+}
+
+const stopPlaneAnimation = () => {
+  if (planeInstance) {
+    planeInstance.destroy()
+    planeInstance = null
+  }
 }
 
 const playCheckmarkAnimation = async () => {
@@ -72,6 +101,8 @@ const uploadFiles = async () => {
   errorMessage.value = ''
   copied.value = false
 
+  await playPlaneAnimation()
+
   const code = generateCode()
 
   try {
@@ -87,12 +118,16 @@ const uploadFiles = async () => {
       }
     }
 
+    stopPlaneAnimation()
+
     transferCode.value = code
     uploadSuccess.value = true
     selectedFiles.value = []
 
     playCheckmarkAnimation()
   } catch (error) {
+    stopPlaneAnimation()
+
     errorMessage.value = error.message || 'Upload failed. Please try again.'
   } finally {
     uploadLoading.value = false
@@ -118,6 +153,22 @@ const copyCode = async () => {
           <p class="subtitle">
             Upload files and generate a transfer code.
           </p>
+        </div>
+
+        <div
+          v-if="uploadLoading"
+          class="sending-card"
+        >
+          <div
+            ref="planeContainer"
+            class="plane-animation"
+          ></div>
+
+          <div>
+            <h3>Sending files</h3>
+
+            <p>Please wait. Your files are being transferred.</p>
+          </div>
         </div>
 
         <div
@@ -168,6 +219,7 @@ const copyCode = async () => {
               <button
                 type="button"
                 class="remove-button"
+                :disabled="uploadLoading"
                 @click="removeFile(index)"
               >
                 <font-awesome-icon icon="xmark" />
@@ -240,7 +292,7 @@ const copyCode = async () => {
           :disabled="uploadLoading"
           @click="uploadFiles"
         >
-          {{ uploadLoading ? 'Uploading...' : 'Generate Code' }}
+          {{ uploadLoading ? 'Sending...' : 'Generate Code' }}
         </BaseButton>
       </div>
     </section>
@@ -276,6 +328,50 @@ const copyCode = async () => {
 
 .send-panel-header {
   flex-shrink: 0;
+}
+
+.sending-card,
+.success-card {
+  padding: 12px;
+
+  background: var(--primary-light);
+
+  border: 1.5px solid var(--border-color);
+
+  border-radius: var(--radius-md);
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  flex-shrink: 0;
+}
+
+.plane-animation,
+.checkmark-animation {
+  width: 54px;
+  height: 54px;
+
+  flex-shrink: 0;
+}
+
+.sending-card h3,
+.success-card h3 {
+  font-size: 0.95rem;
+
+  font-weight: 800;
+}
+
+.sending-card p,
+.success-card p {
+  margin-top: 3px;
+
+  color: var(--text-light);
+
+  font-size: 0.76rem;
+
+  font-weight: 600;
 }
 
 .upload-box {
@@ -384,6 +480,12 @@ const copyCode = async () => {
   flex-shrink: 0;
 }
 
+.remove-button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
 .empty-text {
   color: var(--text-light);
 
@@ -400,46 +502,6 @@ const copyCode = async () => {
   font-size: 0.85rem;
 
   flex-shrink: 0;
-}
-
-.success-card {
-  padding: 12px;
-
-  background: var(--primary-light);
-
-  border: 1.5px solid var(--border-color);
-
-  border-radius: var(--radius-md);
-
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  flex-shrink: 0;
-}
-
-.checkmark-animation {
-  width: 54px;
-  height: 54px;
-
-  flex-shrink: 0;
-}
-
-.success-card h3 {
-  font-size: 0.95rem;
-
-  font-weight: 800;
-}
-
-.success-card p {
-  margin-top: 3px;
-
-  color: var(--text-light);
-
-  font-size: 0.76rem;
-
-  font-weight: 600;
 }
 
 .code-panel {

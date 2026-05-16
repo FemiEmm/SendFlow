@@ -12,7 +12,12 @@ import {
   faMoon,
   faFile,
   faPowerOff,
-  faFileZipper
+  faFileZipper,
+  faCircleQuestion,
+  faMagnifyingGlass,
+  faFolderOpen,
+   faCircleInfo,
+   faShareNodes
 
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -28,5 +33,10 @@ library.add(
   faMoon,
   faFile,
   faPowerOff,
-  faFileZipper
+  faFileZipper,
+  faCircleQuestion,
+  faMagnifyingGlass,
+  faFolderOpen,
+   faCircleInfo,
+   faShareNodes
 )

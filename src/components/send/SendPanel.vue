@@ -1,12 +1,15 @@
 <script setup>
-import { nextTick, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import lottie from 'lottie-web'
 
 import { supabase } from '../../services/supabase'
 import BaseButton from '../ui/BaseButton.vue'
+import FileSizeBar from './FileSizeBar.vue'
 
 import checkmarkAnimation from '../../assets/styles/animations/checkmark.json'
 import planeAnimation from '../../assets/styles/animations/paper-plane.json'
+
+const MAX_TOTAL_SIZE = 50 * 1024 * 1024
 
 const selectedFiles = ref([])
 const transferCode = ref('')
@@ -19,6 +22,14 @@ const checkmarkContainer = ref(null)
 const planeContainer = ref(null)
 
 let planeInstance = null
+
+const totalFileSize = computed(() => {
+  return selectedFiles.value.reduce((sum, file) => sum + file.size, 0)
+})
+
+const isOverSizeLimit = computed(() => {
+  return totalFileSize.value > MAX_TOTAL_SIZE
+})
 
 const generateCode = () => {
   const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
@@ -88,11 +99,17 @@ const removeFile = (index) => {
 
   transferCode.value = ''
   uploadSuccess.value = false
+  errorMessage.value = ''
 }
 
 const uploadFiles = async () => {
   if (!selectedFiles.value.length) {
     errorMessage.value = 'Please choose at least one file.'
+    return
+  }
+
+  if (isOverSizeLimit.value) {
+    errorMessage.value = 'File too large. Reduce file size or get the paid version.'
     return
   }
 
@@ -200,6 +217,11 @@ const copyCode = async () => {
           />
         </label>
 
+        <FileSizeBar
+          :files="selectedFiles"
+          :max-size="MAX_TOTAL_SIZE"
+        />
+
         <div class="file-area">
           <div
             v-if="selectedFiles.length"
@@ -289,7 +311,7 @@ const copyCode = async () => {
       >
         <BaseButton
           type="button"
-          :disabled="uploadLoading"
+          :disabled="uploadLoading || isOverSizeLimit"
           @click="uploadFiles"
         >
           {{ uploadLoading ? 'Sending...' : 'Generate Code' }}
@@ -310,9 +332,9 @@ const copyCode = async () => {
 }
 
 .send-panel {
-  height: min(500px, calc(100svh - 300px));
+  height: min(520px, calc(100svh - 300px));
 
-  min-height: 360px;
+  min-height: 390px;
 
   overflow: hidden;
 }
@@ -323,7 +345,7 @@ const copyCode = async () => {
   display: flex;
   flex-direction: column;
 
-  gap: 16px;
+  gap: 14px;
 }
 
 .send-panel-header {
@@ -343,12 +365,18 @@ const copyCode = async () => {
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 14px;
 
   flex-shrink: 0;
 }
 
-.plane-animation,
+.plane-animation {
+  width: 96px;
+  height: 96px;
+
+  flex-shrink: 0;
+}
+
 .checkmark-animation {
   width: 54px;
   height: 54px;
@@ -375,7 +403,7 @@ const copyCode = async () => {
 }
 
 .upload-box {
-  min-height: 126px;
+  min-height: 118px;
 
   background: var(--primary-light);
 
@@ -618,6 +646,15 @@ const copyCode = async () => {
 @media (max-width: 640px) {
   .send-panel {
     min-height: auto;
+  }
+
+  .sending-card {
+    align-items: center;
+  }
+
+  .plane-animation {
+    width: 82px;
+    height: 82px;
   }
 
   .upload-box {

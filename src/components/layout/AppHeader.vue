@@ -50,7 +50,7 @@ onMounted(() => {
           alt="Sendnest logo"
         />
 
-        <span>Sendnest</span>
+        <span>SendNest</span>
       </div>
     </div>
 

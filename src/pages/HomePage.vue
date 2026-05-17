@@ -138,10 +138,11 @@ const shareApp = async () => {
 
 <style scoped>
 .homepage {
-  max-height: 100svh;
+  min-height: 100svh;
   background: var(--bg-color);
   display: flex;
   flex-direction: column;
+  max-width: 100vw;
 }
 
 .homepage-grid {
@@ -331,11 +332,23 @@ const shareApp = async () => {
 
   .homepage-grid {
     padding: 32px 32px 42px;
-
     grid-template-columns: 1fr;
-
     gap: 34px;
   }
+
+  .homepage-grid
+ {
+  width: min(100% - 38px, 720px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.homepage-grid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+
 
   .function-column {
     order: 2;
@@ -375,7 +388,10 @@ const shareApp = async () => {
   }
 
   .homepage-grid {
-    padding: 26px 18px 34px;
+   display: flex;
+    flex-direction: column;
+
+    padding: 26px 0px 24px 0px;
 
     gap: 28px;
   }

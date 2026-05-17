@@ -19,6 +19,12 @@ const cleanCode = () => {
     .slice(0, 4)
 }
 
+const shortenFileName = (fileName) => {
+  return fileName.length > 14
+    ? `${fileName.slice(0, 14)}...`
+    : fileName
+}
+
 const fetchFiles = async () => {
   cleanCode()
 
@@ -238,7 +244,9 @@ const keepFiles = () => {
               </div>
 
               <div class="file-text">
-                <strong>{{ file.name }}</strong>
+                <strong :title="file.name">
+                  {{ shortenFileName(file.name) }}
+                </strong>
 
                 <p>{{ (file.size / 1024 / 1024).toFixed(2) }} MB</p>
               </div>
@@ -322,6 +330,7 @@ const keepFiles = () => {
   height: min(480px, calc(100svh - 180px));
   max-height: 680px;
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .receive-panel-content {
@@ -381,6 +390,8 @@ const keepFiles = () => {
   border: 1.5px solid var(--border-color);
   border-radius: var(--radius-sm);
   background: var(--card-color);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .file-info {
@@ -388,6 +399,7 @@ const keepFiles = () => {
   align-items: center;
   gap: 12px;
   min-width: 0;
+  flex: 1;
 }
 
 .file-icon {
@@ -405,11 +417,12 @@ const keepFiles = () => {
 
 .file-text {
   min-width: 0;
+  flex: 1;
 }
 
 .file-text strong {
   display: block;
-  max-width: 100%;
+  width: 100%;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;

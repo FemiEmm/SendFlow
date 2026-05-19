@@ -18,7 +18,8 @@ import {
   faFolderOpen,
    faCircleInfo,
    faShareNodes,
-   faEnvelope
+   faEnvelope,
+   faSun
 
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -45,5 +46,6 @@ library.add(
    faCircleInfo,
    faShareNodes,
    faEnvelope,
-     faInstagram
+     faInstagram,
+     faSun
 )

@@ -302,6 +302,12 @@ onMounted(() => {
   }
 }
 
+@media (max-width: 640px) {
+  .nav-links {
+    display: none;
+  }
+}
+
 @media (max-width: 520px) {
   .nav-links {
     justify-content: space-between;
@@ -317,6 +323,10 @@ onMounted(() => {
     padding: 9px 14px;
 
     font-size: 0.8rem;
+  }
+
+  .header-right{
+    display: none;
   }
 }
 </style>

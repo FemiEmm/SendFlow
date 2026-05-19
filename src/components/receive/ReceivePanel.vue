@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 import JSZip from 'jszip'
 
+import { Capacitor } from '@capacitor/core'
+import { Filesystem, Directory } from '@capacitor/filesystem'
+
+
 import { supabase } from '../../services/supabase'
 import BaseButton from '../ui/BaseButton.vue'
 
@@ -72,18 +76,48 @@ const fetchFiles = async () => {
   }
 }
 
-const downloadBlob = (blob, fileName) => {
+const blobToBase64 = (blob) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+
+    reader.onerror = reject
+
+    reader.onload = () => {
+      const base64 = reader.result.split(',')[1]
+      resolve(base64)
+    }
+
+    reader.readAsDataURL(blob)
+  })
+}
+
+const downloadBlobWeb = (blob, fileName) => {
   const blobUrl = window.URL.createObjectURL(blob)
 
   const link = document.createElement('a')
+
   link.href = blobUrl
   link.download = fileName
 
   document.body.appendChild(link)
+
   link.click()
+
   document.body.removeChild(link)
 
   window.URL.revokeObjectURL(blobUrl)
+}
+
+const saveFileNative = async (blob, fileName) => {
+  const base64Data = await blobToBase64(blob)
+
+  await Filesystem.writeFile({
+    path: fileName,
+    data: base64Data,
+    directory: Directory.Documents
+  })
+
+  successMessage.value = 'File downloaded successfully.'
 }
 
 const downloadFile = async (file) => {
@@ -96,7 +130,11 @@ const downloadFile = async (file) => {
 
     const blob = await response.blob()
 
-    downloadBlob(blob, file.name)
+    if (Capacitor.isNativePlatform()) {
+      await saveFileNative(blob, file.name)
+    } else {
+      downloadBlobWeb(blob, file.name)
+    }
 
     showDeletePrompt.value = true
   } catch (error) {
@@ -130,7 +168,13 @@ const downloadAllFiles = async () => {
       type: 'blob'
     })
 
-    downloadBlob(zipBlob, `${transferCode.value}-sendnext-files.zip`)
+    const zipName = `${transferCode.value}-sendnext-files.zip`
+
+    if (Capacitor.isNativePlatform()) {
+      await saveFileNative(zipBlob, zipName)
+    } else {
+      downloadBlobWeb(zipBlob, zipName)
+    }
 
     showDeletePrompt.value = true
   } catch (error) {
@@ -159,6 +203,7 @@ const deleteFiles = async () => {
     foundFiles.value = []
     transferCode.value = ''
     showDeletePrompt.value = false
+
     successMessage.value = 'Files deleted successfully.'
   } catch (error) {
     errorMessage.value = error.message || 'Could not delete files.'

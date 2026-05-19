@@ -13,16 +13,30 @@ import HelpPanel from '../components/help/HelpPanel.vue'
 import AboutPanel from '../components/help/AboutPanel.vue'
 
 defineEmits(['open-sendnext'])
+
 const activeTab = ref('send')
 const shareCopied = ref(false)
-
+const isDarkMode = ref(false)
 const isMobile = ref(window.innerWidth <= 640)
 
 const handleResize = () => {
   isMobile.value = window.innerWidth <= 640
 }
 
+const applyTheme = () => {
+  document.documentElement.classList.toggle('dark-mode', isDarkMode.value)
+  localStorage.setItem('sendnext-theme', isDarkMode.value ? 'dark' : 'light')
+}
+
+const toggleTheme = () => {
+  isDarkMode.value = !isDarkMode.value
+  applyTheme()
+}
+
 onMounted(() => {
+  const savedTheme = localStorage.getItem('sendnext-theme')
+  isDarkMode.value = savedTheme === 'dark'
+  applyTheme()
   window.addEventListener('resize', handleResize)
 })
 
@@ -61,18 +75,15 @@ const shareApp = async () => {
 <template>
   <div class="homepage">
     <AppHeader
-  v-model="activeTab"
-  @open-sendnext="$emit('open-sendnext')"
-/>
+      v-model="activeTab"
+      @open-sendnext="$emit('open-sendnext')"
+    />
 
     <main class="homepage-grid">
       <section class="function-column">
         <SendPanel v-if="activeTab === 'send'" />
-
         <ReceivePanel v-if="activeTab === 'receive'" />
-
         <HelpPanel v-if="activeTab === 'help'" />
-
         <AboutPanel v-if="activeTab === 'about'" />
       </section>
 
@@ -133,6 +144,60 @@ const shareApp = async () => {
         </div>
       </div>
     </footer>
+
+    <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
+    
+         <button
+        type="button"
+        class="mobile-nav-button"
+        :class="{ active: activeTab === 'help' }"
+        aria-label="Help"
+        @click="activeTab = 'help'"
+      >
+        <font-awesome-icon icon="circle-question" />
+      </button>
+
+      <button
+        type="button"
+        class="mobile-nav-button"
+        :class="{ active: activeTab === 'receive' }"
+        aria-label="Receive files"
+        @click="activeTab = 'receive'"
+      >
+        <font-awesome-icon icon="download" />
+      </button>
+
+   
+
+        <button
+        type="button"
+        class="mobile-nav-button"
+        :class="{ active: activeTab === 'send' }"
+        aria-label="Send files"
+        @click="activeTab = 'send'"
+      >
+        <font-awesome-icon icon="upload" />
+      </button>
+
+      <button
+        type="button"
+        class="mobile-nav-button"
+        :class="{ active: activeTab === 'about' }"
+        aria-label="About"
+        @click="activeTab = 'about'"
+      >
+        <font-awesome-icon icon="circle-info" />
+      </button>
+
+      <button
+        type="button"
+        class="mobile-nav-button"
+        aria-label="Toggle theme"
+        @click="toggleTheme"
+      >
+        <font-awesome-icon :icon="isDarkMode ? 'sun' : 'moon'" />
+      </button>
+    </nav>
   </div>
 </template>
 
@@ -142,187 +207,135 @@ const shareApp = async () => {
   background: var(--bg-color);
   display: flex;
   flex-direction: column;
-  max-width: 100vw;
+  max-width: 100%;
 }
 
 .homepage-grid {
   flex: 1;
-
   width: 100%;
-
   min-height: 0;
-
   padding: clamp(20px, 4vh, 42px) clamp(32px, 5vw, 72px);
-
   display: grid;
-
   grid-template-columns: minmax(320px, 0.95fr) minmax(320px, 1.05fr);
-
   align-items: center;
-
   gap: clamp(28px, 4vw, 56px);
 }
 
 .function-column {
   width: 100%;
-
+  min-width: 0;
   display: flex;
-
   justify-content: center;
 }
 
 .hero-column {
   width: 100%;
-
+  min-width: 0;
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
 }
 
 .hero-copy {
   width: 100%;
-
   max-width: 520px;
-
   margin-bottom: clamp(16px, 3vh, 28px);
 }
 
 .hero-copy h1 {
   font-size: clamp(2.15rem, 4vw, 3rem);
-
   line-height: 1.08;
-
   font-weight: 800;
-
   color: var(--text-color);
 }
 
 .hero-copy p {
   max-width: 430px;
-
   margin-top: 14px;
-
   font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-
   line-height: 1.5;
-
   color: var(--text-light);
 }
 
 .hero-image {
   width: 100%;
-
   max-width: 500px;
-
   display: flex;
-
   justify-content: center;
 }
 
 .hero-image img {
   width: 100%;
-
   max-width: clamp(240px, 26vw, 340px);
-
   object-fit: contain;
-
   transition: opacity 0.25s ease;
 }
 
 .app-footer {
   margin: 0 clamp(32px, 5vw, 72px) clamp(18px, 3vh, 28px);
-
   padding: 16px;
-
   background: var(--card-color);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: var(--radius-lg);
-
   display: grid;
-
   grid-template-columns: 1fr 1fr;
-
   gap: 18px;
-
   box-shadow: var(--shadow-sm);
 }
 
 .footer-share,
 .footer-disclaimer {
   display: flex;
-
   align-items: center;
-
   gap: 12px;
 }
 
 .footer-icon {
   width: 42px;
   height: 42px;
-
   background: var(--primary-light);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 14px;
-
   color: var(--primary-dark);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   flex-shrink: 0;
 }
 
 .footer-share h3,
 .footer-disclaimer h3 {
   font-size: 0.9rem;
-
   font-weight: 800;
-
   color: var(--text-color);
 }
 
 .footer-share p,
 .footer-disclaimer p {
   margin-top: 3px;
-
   font-size: 0.74rem;
-
   line-height: 1.35;
-
   color: var(--text-light);
 }
 
 .footer-button {
   margin-left: auto;
-
   padding: 10px 20px;
-
   background: var(--primary-color);
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 999px;
-
   color: #ffffff;
-
   font-size: 0.76rem;
-
   font-weight: 800;
-
   display: flex;
-
   align-items: center;
-
   gap: 8px;
-
   white-space: nowrap;
+}
+
+.mobile-bottom-nav {
+  display: none;
 }
 
 @media (max-width: 1024px) {
@@ -331,24 +344,14 @@ const shareApp = async () => {
   }
 
   .homepage-grid {
-    padding: 32px 32px 42px;
-    grid-template-columns: 1fr;
+    padding: 32px 0 42px;
+    display: flex;
+    flex-direction: column;
+    width: min(100% - 38px, 720px);
+    margin-left: auto;
+    margin-right: auto;
     gap: 34px;
   }
-
-  .homepage-grid
- {
-  width: min(100% - 38px, 720px);
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.homepage-grid {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-
 
   .function-column {
     order: 2;
@@ -360,7 +363,6 @@ const shareApp = async () => {
 
   .hero-copy {
     text-align: center;
-
     margin-bottom: 22px;
   }
 
@@ -375,7 +377,6 @@ const shareApp = async () => {
 
   .app-footer {
     margin: 0 32px 28px;
-
     grid-template-columns: 1fr;
   }
 }
@@ -383,16 +384,13 @@ const shareApp = async () => {
 @media (max-width: 640px) {
   .homepage {
     min-height: 100svh;
-
     display: block;
+    padding-bottom: 94px;
   }
 
   .homepage-grid {
-   display: flex;
-    flex-direction: column;
-
-    padding: 26px 0px 24px 0px;
-
+    width: min(100% - 36px, 520px);
+    padding: 26px 0 24px;
     gap: 28px;
   }
 
@@ -409,30 +407,39 @@ const shareApp = async () => {
   }
 
   .app-footer {
-    margin: 0 18px 24px;
-
-    padding: 14px;
+    display: none;
   }
 
-  .footer-share,
-  .footer-disclaimer {
+  .mobile-bottom-nav {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 50;
+    height: 64px;
+    background: rgb(from var(--primary-dark) r g b / 0.9);
+    /* border: 1.5px solid var(--border-color); */
+    border-radius: 999px;
     display: grid;
-
-    grid-template-columns: 42px 1fr;
-
-    align-items: start;
-
-    gap: 12px;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    box-shadow: var(--shadow-md);
+   
   }
 
-  .footer-button {
-    grid-column: 1 / -1;
+  .mobile-nav-button {
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: var(--card-color);
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    width: fit-content;
-
-    justify-self: center;
-
-    margin-left: 0;
+  .mobile-nav-button.active {
+    color: var(--text-color);
   }
 }
 </style>

@@ -372,7 +372,7 @@ const copyCode = async () => {
   padding: 0 20px;
   background: var(--primary-light);
   border: 1.5px solid var(--border-color);
-  border-radius: 999px;
+  border-radius: var(--radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;

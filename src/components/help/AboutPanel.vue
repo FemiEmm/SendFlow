@@ -97,7 +97,7 @@ const reOnboardUser = () => {
 
 <style scoped>
 .about-panel {
-  height: min(500px, calc(100svh - 300px));
+  height: max(620px, calc(100svh - 300px));
   min-height: 360px;
   overflow: hidden;
 }

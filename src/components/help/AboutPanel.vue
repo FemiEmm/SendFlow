@@ -1,3 +1,11 @@
+<script setup>
+const emit = defineEmits(['re-onboard'])
+
+const reOnboardUser = () => {
+  emit('re-onboard')
+}
+</script>
+
 <template>
   <section class="card about-panel">
     <div class="about-content">
@@ -59,6 +67,24 @@
       </div>
 
       <div class="about-section">
+        <h3>Onboarding</h3>
+
+        <p>
+          Restart the intro guide if you want to view the app walkthrough again.
+        </p>
+
+        <button
+          type="button"
+          class="re-onboard-button"
+          @click="reOnboardUser"
+        >
+          <font-awesome-icon icon="rotate-left" />
+
+          <span>ReOnboard me</span>
+        </button>
+      </div>
+
+      <div class="about-section">
         <h3>Copyright</h3>
 
         <p>
@@ -81,6 +107,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
 }
 
 .panel-header {
@@ -146,7 +173,8 @@
   color: var(--text-color);
 }
 
-.contact-button {
+.contact-button,
+.re-onboard-button {
   height: 42px;
   padding: 0 16px;
   background: var(--card-color);
@@ -162,8 +190,14 @@
   transition: var(--transition);
 }
 
-.contact-button:hover {
+.contact-button:hover,
+.re-onboard-button:hover {
   transform: translateY(-1px);
+}
+
+.re-onboard-button {
+  margin-top: 12px;
+  cursor: pointer;
 }
 
 .instagram-row {
@@ -214,7 +248,8 @@
     width: 100%;
   }
 
-  .contact-button {
+  .contact-button,
+  .re-onboard-button {
     width: 100%;
     justify-content: center;
   }

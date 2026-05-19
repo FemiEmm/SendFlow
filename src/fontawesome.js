@@ -16,10 +16,13 @@ import {
   faCircleQuestion,
   faMagnifyingGlass,
   faFolderOpen,
-   faCircleInfo,
-   faShareNodes,
-   faEnvelope,
-   faSun
+  faCircleInfo,
+  faShareNodes,
+  faEnvelope,
+  faSun,
+  faChevronLeft,
+  faChevronRight,
+  faRotateLeft,
 
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -43,9 +46,12 @@ library.add(
   faCircleQuestion,
   faMagnifyingGlass,
   faFolderOpen,
-   faCircleInfo,
-   faShareNodes,
-   faEnvelope,
-     faInstagram,
-     faSun
+  faCircleInfo,
+  faShareNodes,
+  faEnvelope,
+  faInstagram,
+  faSun,
+  faChevronLeft,
+  faChevronRight,
+  faRotateLeft,
 )

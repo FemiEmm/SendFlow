@@ -2,6 +2,7 @@
 import {
   ref,
   computed,
+  watch,
   onMounted,
   onBeforeUnmount
 } from 'vue'
@@ -12,12 +13,29 @@ import ReceivePanel from '../components/receive/ReceivePanel.vue'
 import HelpPanel from '../components/help/HelpPanel.vue'
 import AboutPanel from '../components/help/AboutPanel.vue'
 
-defineEmits(['open-sendnext'])
+const props = defineProps({
+  startTab: {
+    type: String,
+    default: 'send'
+  }
+})
 
-const activeTab = ref('send')
+const emit = defineEmits([
+  'open-sendnext',
+  're-onboard'
+])
+
+const activeTab = ref(props.startTab)
 const shareCopied = ref(false)
 const isDarkMode = ref(false)
 const isMobile = ref(window.innerWidth <= 640)
+
+watch(
+  () => props.startTab,
+  (newTab) => {
+    activeTab.value = newTab
+  }
+)
 
 const handleResize = () => {
   isMobile.value = window.innerWidth <= 640
@@ -82,9 +100,15 @@ const shareApp = async () => {
     <main class="homepage-grid">
       <section class="function-column">
         <SendPanel v-if="activeTab === 'send'" />
+
         <ReceivePanel v-if="activeTab === 'receive'" />
+
         <HelpPanel v-if="activeTab === 'help'" />
-        <AboutPanel v-if="activeTab === 'about'" />
+
+        <AboutPanel
+          v-if="activeTab === 'about'"
+          @re-onboard="emit('re-onboard')"
+        />
       </section>
 
       <section class="hero-column">
@@ -146,8 +170,7 @@ const shareApp = async () => {
     </footer>
 
     <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
-    
-         <button
+      <button
         type="button"
         class="mobile-nav-button"
         :class="{ active: activeTab === 'help' }"
@@ -167,9 +190,7 @@ const shareApp = async () => {
         <font-awesome-icon icon="download" />
       </button>
 
-   
-
-        <button
+      <button
         type="button"
         class="mobile-nav-button"
         :class="{ active: activeTab === 'send' }"
@@ -420,13 +441,11 @@ const shareApp = async () => {
     z-index: 50;
     height: 64px;
     background: rgb(from var(--primary-dark) r g b / 1);
-    /* border: 1.5px solid var(--border-color); */
     border-radius: 999px;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     align-items: center;
     box-shadow: var(--shadow-md);
-   
   }
 
   .mobile-nav-button {

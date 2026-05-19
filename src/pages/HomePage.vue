@@ -412,12 +412,14 @@ const shareApp = async () => {
 
   .mobile-bottom-nav {
     position: fixed;
+    transform: translateZ(0);
+    will-change: transform;
     left: 12px;
     right: 12px;
     bottom: calc(12px + env(safe-area-inset-bottom));
     z-index: 50;
     height: 64px;
-    background: rgb(from var(--primary-dark) r g b / 0.9);
+    background: rgb(from var(--primary-dark) r g b / 1);
     /* border: 1.5px solid var(--border-color); */
     border-radius: 999px;
     display: grid;

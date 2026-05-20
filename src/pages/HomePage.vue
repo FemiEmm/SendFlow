@@ -12,6 +12,7 @@ import SendPanel from '../components/send/SendPanel.vue'
 import ReceivePanel from '../components/receive/ReceivePanel.vue'
 import HelpPanel from '../components/help/HelpPanel.vue'
 import AboutPanel from '../components/help/AboutPanel.vue'
+import { supabase } from '../services/supabase'
 
 const props = defineProps({
   startTab: {
@@ -51,10 +52,25 @@ const toggleTheme = () => {
   applyTheme()
 }
 
+const deliveryCount = ref(0)
+
+const fetchDeliveryCount = async () => {
+  const { data, error } = await supabase
+    .from('delivery_stats')
+    .select('total_deliveries')
+    .eq('id', 1)
+    .single()
+
+  if (error) return
+
+  deliveryCount.value = data.total_deliveries
+}
+
 onMounted(() => {
   const savedTheme = localStorage.getItem('sendnext-theme')
   isDarkMode.value = savedTheme === 'dark'
   applyTheme()
+  fetchDeliveryCount()
   window.addEventListener('resize', handleResize)
 })
 
@@ -117,6 +133,12 @@ const shareApp = async () => {
 
           <p>
             Upload a file, generate a code, and receive it on another device.
+          </p>
+
+        <p class="delivery-counter">
+            We have successfully delivered
+            <strong>{{ deliveryCount }}</strong>
+            files.
           </p>
         </div>
 
@@ -277,6 +299,18 @@ const shareApp = async () => {
   font-size: clamp(0.95rem, 1.4vw, 1.1rem);
   line-height: 1.5;
   color: var(--text-light);
+}
+
+.delivery-counter {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+.delivery-counter strong {
+  color: var(--primary-dark);
+  font-weight: 900;
 }
 
 .hero-image {

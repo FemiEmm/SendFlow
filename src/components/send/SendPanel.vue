@@ -42,6 +42,14 @@ const generateCode = () => {
   return code
 }
 
+const incrementDeliveryCount = async () => {
+  const { error } = await supabase.rpc('increment_delivery_count')
+
+  if (error) {
+    throw error
+  }
+}
+
 const playPlaneAnimation = async () => {
   await nextTick()
 
@@ -136,6 +144,8 @@ const uploadFiles = async () => {
         throw error
       }
     }
+
+    await incrementDeliveryCount()
 
     stopPlaneAnimation()
 
@@ -339,7 +349,6 @@ const copyCode = async () => {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  
 }
 
 .send-panel {
@@ -403,7 +412,6 @@ const copyCode = async () => {
   align-items: center;
   gap: 14px;
   flex-shrink: 0;
-  
 }
 
 .plane-animation {
@@ -437,7 +445,6 @@ const copyCode = async () => {
   min-height: 0;
   overflow-y: auto;
   padding-right: 4px;
-
 }
 
 .file-list {

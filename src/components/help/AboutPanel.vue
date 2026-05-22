@@ -77,7 +77,7 @@ const openCompanyPage = () => {
           >
             <font-awesome-icon icon="building" />
 
-            <span>Company</span>
+            <span>Who are we?</span>
           </button>
 
           <button
@@ -268,11 +268,16 @@ const openCompanyPage = () => {
   }
 
   .contact-button,
-  .instagram-button,
   .company-button,
   .reset-button {
     width: 100%;
   }
+
+  .instagram-button{
+    justify-content: center;
+    align-self: center;
+   }
+
 
   .button-row {
     flex-direction: column;

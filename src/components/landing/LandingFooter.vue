@@ -1,91 +1,4 @@
-<script setup>
-import { ref } from 'vue'
-
-const firstName = ref('')
-const lastName = ref('')
-const email = ref('')
-const message = ref('')
-const submitted = ref(false)
-
-const submitForm = () => {
-  submitted.value = true
-
-  firstName.value = ''
-  lastName.value = ''
-  email.value = ''
-  message.value = ''
-}
-</script>
-
 <template>
-  <section class="contact-section">
-    <div class="contact-copy">
-      <h2>Need help?</h2>
-
-      <p>
-        Questions, partnerships, advertising inquiries, support requests, or feedback. We would love to hear from you.
-      </p>
-    </div>
-
-    <form
-      class="contact-form"
-      @submit.prevent="submitForm"
-    >
-      <div class="form-row">
-        <label>
-          <span>First name</span>
-
-          <input
-            v-model="firstName"
-            type="text"
-            required
-          />
-        </label>
-
-        <label>
-          <span>Last name</span>
-
-          <input
-            v-model="lastName"
-            type="text"
-            required
-          />
-        </label>
-      </div>
-
-      <label>
-        <span>Email</span>
-
-        <input
-          v-model="email"
-          type="email"
-          required
-        />
-      </label>
-
-      <label>
-        <span>Message</span>
-
-        <textarea
-          v-model="message"
-          rows="5"
-          required
-        ></textarea>
-      </label>
-
-      <button type="submit">
-        Submit
-      </button>
-
-      <p
-        v-if="submitted"
-        class="form-success"
-      >
-        Message received.
-      </p>
-    </form>
-  </section>
-
   <footer class="landing-footer">
     <div class="footer-grid">
       <div class="footer-brand">
@@ -175,89 +88,7 @@ const submitForm = () => {
 </template>
 
 <style scoped>
-.contact-section {
-  padding: clamp(48px, 8vw, 110px) clamp(22px, 6vw, 90px);
-  display: grid;
-  grid-template-columns: 0.85fr 1.15fr;
-  gap: clamp(34px, 6vw, 80px);
-  align-items: start;
-}
-
-.contact-copy h2 {
-  color: var(--text-color);
-  font-size: clamp(3rem, 8vw, 6.5rem);
-  line-height: 0.92;
-  font-weight: 900;
-}
-
-.contact-copy p {
-  max-width: 520px;
-  margin-top: 22px;
-  color: var(--text-light);
-  font-size: 1.05rem;
-  line-height: 1.65;
-}
-
-.contact-form {
-  padding: 26px;
-  background: var(--card-color);
-  border: 1.5px solid var(--border-color);
-  border-radius: 30px;
-  box-shadow: var(--shadow-sm);
-  display: grid;
-  gap: 16px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-label {
-  display: grid;
-  gap: 8px;
-}
-
-label span {
-  color: var(--text-color);
-  font-size: 0.82rem;
-  font-weight: 900;
-}
-
-input,
-textarea {
-  width: 100%;
-  padding: 14px 16px;
-  background: var(--bg-color);
-  border: 1.5px solid var(--border-color);
-  border-radius: 18px;
-  color: var(--text-color);
-  font: inherit;
-  outline: none;
-}
-
-textarea {
-  resize: vertical;
-}
-
-button {
-  height: 52px;
-  background: var(--primary-dark);
-  border: 1.5px solid var(--border-color);
-  border-radius: 999px;
-  color: var(--card-color);
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.form-success {
-  color: var(--primary-dark);
-  font-weight: 900;
-}
-
 .landing-footer {
-  margin-top: 90px;
   padding: clamp(40px, 7vw, 80px) clamp(22px, 6vw, 90px) 34px;
   background: var(--card-color);
   border-top: 1.5px solid var(--border-color);
@@ -343,14 +174,6 @@ button {
 }
 
 @media (max-width: 900px) {
-  .contact-section {
-    grid-template-columns: 1fr;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
   .footer-grid {
     grid-template-columns: 1fr;
   }

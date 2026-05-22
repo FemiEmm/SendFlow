@@ -49,6 +49,31 @@ const goToSlide = (index) => {
   currentSlide.value = index
 }
 
+const touchStartX = ref(0)
+const touchEndX = ref(0)
+
+const handleTouchStart = (event) => {
+  touchStartX.value = event.changedTouches[0].screenX
+}
+
+const handleTouchEnd = (event) => {
+  touchEndX.value = event.changedTouches[0].screenX
+
+  handleSwipe()
+}
+
+const handleSwipe = () => {
+  const swipeDistance = touchStartX.value - touchEndX.value
+
+  if (swipeDistance > 50) {
+    nextSlide()
+  }
+
+  if (swipeDistance < -50) {
+    previousSlide()
+  }
+}
+
 const handlePcSkip = () => {
   if (window.innerWidth >= 641) {
     emit('finish')
@@ -74,7 +99,10 @@ onBeforeUnmount(() => {
       <p>{{ slides[currentSlide].body }}</p>
     </div>
 
-    <div class="onboarding-image-wrap">
+    <div class="onboarding-image-wrap"
+      @touchstart="handleTouchStart"
+      @touchend="handleTouchEnd"
+    >  
       <button
         type="button"
         class="image-arrow left-arrow"

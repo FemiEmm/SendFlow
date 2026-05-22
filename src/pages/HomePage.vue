@@ -8,6 +8,8 @@ import {
 } from 'vue'
 
 import AppHeader from '../components/layout/AppHeader.vue'
+import MobileBottomNav from '../components/navigation/MobileBottomNav.vue'
+
 import SendPanel from '../components/send/SendPanel.vue'
 import ReceivePanel from '../components/receive/ReceivePanel.vue'
 import HelpPanel from '../components/help/HelpPanel.vue'
@@ -22,7 +24,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  
   'open-landing',
   're-onboard'
 ])
@@ -31,6 +32,7 @@ const activeTab = ref(props.startTab)
 const shareCopied = ref(false)
 const isDarkMode = ref(false)
 const isMobile = ref(window.innerWidth <= 640)
+const deliveryCount = ref(0)
 
 watch(
   () => props.startTab,
@@ -53,8 +55,6 @@ const toggleTheme = () => {
   applyTheme()
 }
 
-const deliveryCount = ref(0)
-
 const fetchDeliveryCount = async () => {
   const { data, error } = await supabase
     .from('delivery_stats')
@@ -67,16 +67,32 @@ const fetchDeliveryCount = async () => {
   deliveryCount.value = data.total_deliveries
 }
 
-onMounted(() => {
-  const savedTheme = localStorage.getItem('sendnext-theme')
-  isDarkMode.value = savedTheme === 'dark'
-  applyTheme()
-  fetchDeliveryCount()
-  window.addEventListener('resize', handleResize)
-})
+const heroText = computed(() => {
+  if (activeTab.value === 'receive') {
+    return {
+      title: 'Receive file',
+      subtitle: 'Your files are waiting. Enter the transfer code to download them safely to this device'
+    }
+  }
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', handleResize)
+  if (activeTab.value === 'help') {
+    return {
+      title: 'Need help?',
+      subtitle: 'Check files, recover codes, or manage your transfer.'
+    }
+  }
+
+  if (activeTab.value === 'about') {
+    return {
+      title: 'About Sendnest',
+      subtitle: 'Simple file sharing built for quick device-to-device transfers.'
+    }
+  }
+
+  return {
+    title: 'Send file instantly',
+    subtitle: 'Upload a file, generate a code, and receive it on another device.'
+  }
 })
 
 const heroImage = computed(() => {
@@ -84,9 +100,15 @@ const heroImage = computed(() => {
     return '/images/hero-transfer.png'
   }
 
-  return activeTab.value === 'send'
-    ? '/images/hero-transfer.png'
-    : '/images/hero-transfer-2.png'
+  if (activeTab.value === 'send') {
+    return '/images/hero-transfer.png'
+  }
+
+  if (activeTab.value === 'help') {
+    return '/images/hero-transfer-3.png'
+  }
+
+  return '/images/hero-transfer-2.png'
 })
 
 const shareApp = async () => {
@@ -105,6 +127,20 @@ const shareApp = async () => {
 
   shareCopied.value = true
 }
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem('sendnext-theme')
+  isDarkMode.value = savedTheme === 'dark'
+
+  applyTheme()
+  fetchDeliveryCount()
+
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
 
 <template>
@@ -127,18 +163,17 @@ const shareApp = async () => {
           @open-landing="emit('open-landing')"
           @re-onboard="emit('re-onboard')"
         />
-
       </section>
 
       <section class="hero-column">
         <div class="hero-copy">
-          <h1>Share files instantly</h1>
+          <h1>{{ heroText.title }}</h1>
 
           <p>
-            Upload a file, generate a code, and receive it on another device.
+            {{ heroText.subtitle }}
           </p>
 
-        <p class="delivery-counter">
+          <p class="delivery-counter">
             We have successfully delivered
             <strong>{{ deliveryCount }}</strong>
             files.
@@ -194,56 +229,11 @@ const shareApp = async () => {
       </div>
     </footer>
 
-    <nav class="mobile-bottom-nav" aria-label="Mobile navigation">
-      <button
-        type="button"
-        class="mobile-nav-button"
-        :class="{ active: activeTab === 'help' }"
-        aria-label="Help"
-        @click="activeTab = 'help'"
-      >
-        <font-awesome-icon icon="circle-question" />
-      </button>
-
-      <button
-        type="button"
-        class="mobile-nav-button"
-        :class="{ active: activeTab === 'receive' }"
-        aria-label="Receive files"
-        @click="activeTab = 'receive'"
-      >
-        <font-awesome-icon icon="download" />
-      </button>
-
-      <button
-        type="button"
-        class="mobile-nav-button"
-        :class="{ active: activeTab === 'send' }"
-        aria-label="Send files"
-        @click="activeTab = 'send'"
-      >
-        <font-awesome-icon icon="upload" />
-      </button>
-
-      <button
-        type="button"
-        class="mobile-nav-button"
-        :class="{ active: activeTab === 'about' }"
-        aria-label="About"
-        @click="activeTab = 'about'"
-      >
-        <font-awesome-icon icon="circle-info" />
-      </button>
-
-      <button
-        type="button"
-        class="mobile-nav-button"
-        aria-label="Toggle theme"
-        @click="toggleTheme"
-      >
-        <font-awesome-icon :icon="isDarkMode ? 'sun' : 'moon'" />
-      </button>
-    </nav>
+    <MobileBottomNav
+      v-model="activeTab"
+      :is-dark-mode="isDarkMode"
+      @toggle-theme="toggleTheme"
+    />
   </div>
 </template>
 
@@ -393,10 +383,6 @@ const shareApp = async () => {
   white-space: nowrap;
 }
 
-.mobile-bottom-nav {
-  display: none;
-}
-
 @media (max-width: 1024px) {
   .homepage {
     min-height: 100svh;
@@ -467,38 +453,6 @@ const shareApp = async () => {
 
   .app-footer {
     display: none;
-  }
-
-  .mobile-bottom-nav {
-    position: fixed;
-    transform: translateZ(0);
-    will-change: transform;
-    left: 12px;
-    right: 12px;
-    bottom: calc(12px + env(safe-area-inset-bottom));
-    z-index: 50;
-    height: 64px;
-    background: rgb(from var(--primary-dark) r g b / 1);
-    border-radius: 999px;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    align-items: center;
-    box-shadow: var(--shadow-md);
-  }
-
-  .mobile-nav-button {
-    height: 100%;
-    background: transparent;
-    border: none;
-    color: var(--card-color);
-    font-size: 1.4rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .mobile-nav-button.active {
-    color: var(--text-color);
   }
 }
 </style>

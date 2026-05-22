@@ -126,7 +126,8 @@ onBeforeUnmount(() => {
 .future-card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
   opacity: 0;
   transform: translateY(70px);
   transition: opacity 0.9s ease, transform 0.9s ease;
@@ -139,7 +140,7 @@ onBeforeUnmount(() => {
 }
 
 .future-image-wrap {
-  width: 100%;
+  width: 50%;
   aspect-ratio: 1 / 1;
   margin-bottom: 28px;
   overflow: visible;
@@ -186,11 +187,25 @@ onBeforeUnmount(() => {
 
 @media (max-width: 640px) {
   .future-copy {
-    text-align: left;
+    text-align: center;
   }
 
   .future-grid {
     grid-template-columns: 1fr;
+       gap: 22px;
+  }
+
+  .future-image-wrap {
+    width: 150px;
+    height: 150px;
+    aspect-ratio: auto;
+    margin-bottom: 18px;
+  
+  }
+
+  .future-image {
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

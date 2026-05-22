@@ -8,12 +8,20 @@ defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue', 'open-sendnext'])
+const emit = defineEmits([
+  'update:modelValue',
+  'open-sendnext',
+  'open-landing'
+])
 
 const isDarkMode = ref(false)
 
 const setTab = (tab) => {
   emit('update:modelValue', tab)
+}
+
+const openLanding = () => {
+  emit('open-landing')
 }
 
 const applyTheme = () => {
@@ -42,19 +50,19 @@ onMounted(() => {
 
 <template>
   <header class="app-header">
-  <button
-  class="brand brand-button"
-  type="button"
-  @click="emit('open-sendnext')"
->
-  <img
-    class="brand-logo"
-    src="/Logo/SendNest.svg"
-    alt="Sendnest logo"
-  />
+    <button
+      class="brand brand-button"
+      type="button"
+      @click="openLanding"
+    >
+      <img
+        class="brand-logo"
+        src="/Logo/SendNest.svg"
+        alt="Sendnest logo"
+      />
 
-  <span>Sendnest</span>
-</button>
+      <span>Sendnest</span>
+    </button>
 
     <nav class="header-middle nav-links">
       <button
@@ -107,18 +115,15 @@ onMounted(() => {
 .app-header {
   width: 100%;
   height: 74px;
-
   background: var(--card-color);
-
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-
   align-items: center;
-
-  padding: 0px 70px;
-
+  padding: 0 70px;
   border-bottom: 1.5px solid var(--border-color);
+   font-family: 'McLaren', sans-serif;
 }
+
 .brand-button {
   background: transparent;
   border: none;
@@ -142,57 +147,43 @@ onMounted(() => {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-
   gap: 12px;
 }
 
 .brand {
   display: flex;
   align-items: center;
-
   gap: 12px;
-
   min-width: 0;
-
   color: var(--text-color);
 }
 
 .brand-logo {
   width: 38px;
   height: 38px;
-
   object-fit: contain;
-
   flex-shrink: 0;
 }
 
 .brand span {
   font-size: 1.45rem;
   font-weight: 800;
-
   line-height: 1;
-
   color: var(--text-color);
 }
 
 .nav-links {
   height: 100%;
-
   display: flex;
   align-items: center;
-
   gap: 44px;
 }
 
 .nav-link {
   height: 100%;
-
   position: relative;
-
   font-weight: 700;
-
   color: var(--text-color);
-
   padding: 0 4px;
 }
 
@@ -202,53 +193,37 @@ onMounted(() => {
 
 .nav-link.active::after {
   content: '';
-
   position: absolute;
   left: 0;
   bottom: 0;
-
   width: 100%;
   height: 3px;
-
   background: var(--primary-color);
-
   border-radius: 999px;
 }
 
 .about-button {
   padding: 10px 16px;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 999px;
-
   background: var(--card-color);
-
   color: var(--text-color);
-
   font-weight: 800;
-
   font-size: 0.85rem;
 }
 
 .about-button.active {
   background: var(--primary-light);
-
   color: var(--primary-dark);
 }
 
 .utility-button {
   width: 40px;
   height: 40px;
-
   border: 1.5px solid var(--border-color);
-
   border-radius: 50%;
-
   background: var(--primary-light);
-
   color: var(--text-color);
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -257,12 +232,9 @@ onMounted(() => {
 @media (max-width: 900px) {
   .app-header {
     height: auto;
-
     display: flex;
     flex-direction: column;
-
     gap: 18px;
-
     padding: 20px;
   }
 
@@ -270,7 +242,6 @@ onMounted(() => {
   .header-middle,
   .header-right {
     width: 100%;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -287,17 +258,14 @@ onMounted(() => {
 
   .nav-links {
     width: 100%;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
     gap: 24px;
   }
 
   .header-right {
     display: flex;
-
     gap: 12px;
   }
 }
@@ -311,7 +279,6 @@ onMounted(() => {
 @media (max-width: 520px) {
   .nav-links {
     justify-content: space-between;
-
     gap: 12px;
   }
 
@@ -321,11 +288,10 @@ onMounted(() => {
 
   .about-button {
     padding: 9px 14px;
-
     font-size: 0.8rem;
   }
 
-  .header-right{
+  .header-right {
     display: none;
   }
 }

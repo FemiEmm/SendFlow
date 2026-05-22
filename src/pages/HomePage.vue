@@ -22,7 +22,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'open-sendnext',
+  
+  'open-landing',
   're-onboard'
 ])
 
@@ -110,7 +111,7 @@ const shareApp = async () => {
   <div class="homepage">
     <AppHeader
       v-model="activeTab"
-      @open-sendnext="$emit('open-sendnext')"
+      @open-landing="$emit('open-landing')"
     />
 
     <main class="homepage-grid">
@@ -123,13 +124,15 @@ const shareApp = async () => {
 
         <AboutPanel
           v-if="activeTab === 'about'"
+          @open-landing="emit('open-landing')"
           @re-onboard="emit('re-onboard')"
         />
+
       </section>
 
       <section class="hero-column">
         <div class="hero-copy">
-          <h1>Send files between devices instantly</h1>
+          <h1>Share files instantly</h1>
 
           <p>
             Upload a file, generate a code, and receive it on another device.
@@ -287,10 +290,11 @@ const shareApp = async () => {
 }
 
 .hero-copy h1 {
-  font-size: clamp(2.15rem, 4vw, 3rem);
+  font-size: clamp(3.2rem, 8vw, 5rem);
   line-height: 1.08;
   font-weight: 800;
   color: var(--text-color);
+  font-family: 'Bricolage Grotesque', sans-serif;
 }
 
 .hero-copy p {

@@ -1,8 +1,16 @@
+```vue
 <script setup>
-const emit = defineEmits(['re-onboard'])
+const emit = defineEmits([
+  're-onboard',
+  'open-landing'
+])
 
 const reOnboardUser = () => {
   emit('re-onboard')
+}
+
+const openCompanyPage = () => {
+  emit('open-landing')
 }
 </script>
 
@@ -31,38 +39,26 @@ const reOnboardUser = () => {
         </p>
       </div>
 
-      <div class="about-section">
-        <h3>Contact us</h3>
+      <div class="about-section compact-contact">
+        <h3>Contact developer</h3>
 
-        <div class="contact-row">
-          <div class="contact-group">
-            <p class="contact-email">
-              cquencecomics@gmail.com
-            </p>
+        <div class="compact-contact-row">
+          <a
+            class="contact-button"
+            href="mailto:cquencecomics@gmail.com"
+          >
+            cquencecomics@gmail.com
+          </a>
 
-            <a
-              class="contact-button"
-              href="mailto:cquencecomics@gmail.com"
-            >
-              <font-awesome-icon icon="envelope" />
-
-              <span>Email us</span>
-            </a>
-          </div>
-
-          <div class="instagram-row">
-            <span>@thefemiolaniyi</span>
-
-            <a
-              class="instagram-button"
-              href="https://instagram.com/thefemiolaniyi"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-            >
-              <font-awesome-icon :icon="['fab', 'instagram']" />
-            </a>
-          </div>
+          <a
+            class="instagram-button"
+            href="https://instagram.com/thefemiolaniyi"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+          >
+            <font-awesome-icon :icon="['fab', 'instagram']" />
+          </a>
         </div>
       </div>
 
@@ -70,18 +66,30 @@ const reOnboardUser = () => {
         <h3>Onboarding</h3>
 
         <p>
-          Restart the intro guide if you want to view the app walkthrough again.
+          Visit Company or reset onboarding.
         </p>
 
-        <button
-          type="button"
-          class="re-onboard-button"
-          @click="reOnboardUser"
-        >
-          <font-awesome-icon icon="rotate-left" />
+        <div class="button-row">
+          <button
+            type="button"
+            class="company-button"
+            @click="openCompanyPage"
+          >
+            <font-awesome-icon icon="building" />
 
-          <span>ReOnboard me</span>
-        </button>
+            <span>Company</span>
+          </button>
+
+          <button
+            type="button"
+            class="reset-button"
+            @click="reOnboardUser"
+          >
+            <font-awesome-icon icon="rotate-left" />
+
+            <span>Reset</span>
+          </button>
+        </div>
       </div>
 
       <div class="about-section">
@@ -108,6 +116,13 @@ const reOnboardUser = () => {
   flex-direction: column;
   gap: 16px;
   overflow-y: auto;
+
+   scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.about-content::-webkit-scrollbar {
+  display: none;
 }
 
 .panel-header {
@@ -151,70 +166,40 @@ const reOnboardUser = () => {
   color: var(--text-light);
 }
 
-.contact-row {
-  margin-top: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
+.compact-contact {
+  padding-bottom: 18px;
 }
 
-.contact-group {
+.compact-contact-row {
+  margin-top: 12px;
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.contact-email {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-.contact-button,
-.re-onboard-button {
-  height: 42px;
+.contact-button {
+  height: 40px;
   padding: 0 16px;
   background: var(--card-color);
   border: 1.5px solid var(--border-color);
   border-radius: 999px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
   color: var(--text-color);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 800;
   text-decoration: none;
   transition: var(--transition);
 }
 
-.contact-button:hover,
-.re-onboard-button:hover {
+.contact-button:hover {
   transform: translateY(-1px);
 }
 
-.re-onboard-button {
-  margin-top: 12px;
-  cursor: pointer;
-}
-
-.instagram-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.instagram-row span {
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--text-color);
-}
-
 .instagram-button {
-  width: 42px;
-  height: 42px;
+  width: 40px;
+  height: 40px;
   background: var(--card-color);
   border: 1.5px solid var(--border-color);
   border-radius: 50%;
@@ -231,6 +216,44 @@ const reOnboardUser = () => {
   transform: translateY(-1px);
 }
 
+.button-row {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.company-button,
+.reset-button {
+  height: 42px;
+  padding: 0 18px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.company-button {
+  background: var(--card-color);
+  color: var(--text-color);
+}
+
+.reset-button {
+  background: var(--primary-dark);
+  color: var(--card-color);
+}
+
+.company-button:hover,
+.reset-button:hover {
+  transform: translateY(-1px);
+}
+
 @media (max-width: 1024px) {
   .about-panel {
     height: auto;
@@ -239,19 +262,21 @@ const reOnboardUser = () => {
 }
 
 @media (max-width: 640px) {
-  .contact-row {
+  .compact-contact-row {
     flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .contact-group {
-    width: 100%;
+    align-items: stretch;
   }
 
   .contact-button,
-  .re-onboard-button {
+  .instagram-button,
+  .company-button,
+  .reset-button {
     width: 100%;
-    justify-content: center;
+  }
+
+  .button-row {
+    flex-direction: column;
   }
 }
 </style>
+```

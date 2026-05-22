@@ -8,6 +8,8 @@ import { Preferences } from '@capacitor/preferences'
 
 import HomePage from './pages/HomePage.vue'
 import SendNext from './pages/SendNext.vue'
+import LandingPage from './pages/LandingPage.vue'
+import AdPlacement from './pages/AdPlacement.vue'
 import OnboardingPanel from './components/help/OnboardingPanel.vue'
 
 const currentPage = ref('home')
@@ -20,7 +22,20 @@ const openSendnextPage = () => {
   currentPage.value = 'sendnext'
 }
 
+const openLandingPage = () => {
+  currentPage.value = 'landing'
+}
+
+const openAdPlacementPage = () => {
+  currentPage.value = 'adplacement'
+}
+
 const openHomePage = () => {
+  currentPage.value = 'home'
+}
+
+const openHomeTab = (tab) => {
+  startTab.value = tab
   currentPage.value = 'home'
 }
 
@@ -81,12 +96,25 @@ onMounted(async () => {
       v-if="currentPage === 'home'"
       :start-tab="startTab"
       @open-sendnext="openSendnextPage"
+      @open-landing="openLandingPage"
       @re-onboard="reOnboardUser"
     />
 
     <SendNext
-      v-if="currentPage === 'sendnext'"
+      v-else-if="currentPage === 'sendnext'"
       @go-home="openHomePage"
+    />
+
+    <LandingPage
+      v-else-if="currentPage === 'landing'"
+      @go-home="openHomePage"
+      @open-home-tab="openHomeTab"
+      @open-adplacement="openAdPlacementPage"
+    />
+
+    <AdPlacement
+      v-else-if="currentPage === 'adplacement'"
+      @go-home="openLandingPage"
     />
   </template>
 </template>

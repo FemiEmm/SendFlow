@@ -355,6 +355,11 @@ const findCode = async () => {
   display: grid;
   grid-template-columns: 1fr 130px;
   gap: 10px;
+  color: var(--text-color2);
+}
+
+.input-field {
+  color: var(--text-color2);
 }
 
 .code-input {
@@ -362,6 +367,7 @@ const findCode = async () => {
   font-weight: 800;
   letter-spacing: 6px;
   text-align: center;
+  color: var(--text-color2);
 }
 
 .simple-result {

@@ -587,6 +587,7 @@ const copyCode = async () => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  color: var(--text-color);
 }
 
 @media (max-width: 1024px) {

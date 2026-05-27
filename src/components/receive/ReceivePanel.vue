@@ -411,6 +411,7 @@ const keepFiles = () => {
   font-weight: 800;
   letter-spacing: 6px;
   text-align: center;
+  color: var(--text-color2);
 }
 
 .file-area {

@@ -506,6 +506,7 @@ const keepFiles = () => {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  color: var(--border-color);
 }
 
 .empty-text {

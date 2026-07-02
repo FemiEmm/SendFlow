@@ -7,11 +7,32 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
-.DS_Store
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build output
 dist
 dist-ssr
-coverage
+release
+out
+build-output
+
+# Electron builder output / cache
+*.blockmap
+latest.yml
+builder-debug.yml
+builder-effective-config.yml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local files
 *.local
 
 # Editor directories and files
@@ -24,8 +45,10 @@ coverage
 *.sln
 *.sw?
 
+# TypeScript
 *.tsbuildinfo
 
+# ESLint
 .eslintcache
 
 # Cypress
@@ -37,3 +60,11 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+# Capacitor / Android generated files
+android/.gradle/
+android/app/build/
+android/build/
+android/capacitor-cordova-android-plugins/build/
+android/app/release/
+android/app/debug/

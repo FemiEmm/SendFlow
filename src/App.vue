@@ -12,6 +12,8 @@ import LandingPage from './pages/LandingPage.vue'
 import AdPlacement from './pages/AdPlacement.vue'
 import OnboardingPanel from './components/help/OnboardingPanel.vue'
 
+import { runStorageCleanup } from './services/storageCleaner'
+
 const currentPage = ref('home')
 const startTab = ref('send')
 
@@ -73,6 +75,8 @@ const reOnboardUser = async () => {
 }
 
 onMounted(async () => {
+  runStorageCleanup()
+
   const { value } = await Preferences.get({
     key: 'onboarding-seen'
   })

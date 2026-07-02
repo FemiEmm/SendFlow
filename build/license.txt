@@ -1,0 +1,116 @@
+SENDNEST END USER LICENSE AGREEMENT AND TERMS OF USE
+
+Last updated: [Insert Date]
+
+Please read this agreement carefully before installing or using Sendnest.
+
+By installing, opening, or using Sendnest, you agree to the terms below. If you do not agree, do not install or use this application.
+
+1. ABOUT SENDNEST
+
+Sendnest is a simple file transfer application that allows users to upload and retrieve files through temporary transfer folders.
+
+Sendnest is designed for convenience and short-term file transfer only. It is not intended to be used as permanent file storage, backup storage, legal record storage, medical record storage, financial record storage, or secure archival storage.
+
+2. TEMPORARY FILE STORAGE
+
+Files uploaded through Sendnest are intended to be temporary.
+
+Files may be automatically deleted after a period of time. The current cleanup rule is that files or transfer folders older than 7 days may be removed from storage.
+
+Users are responsible for downloading, saving, and backing up their own files before they expire or are deleted.
+
+Sendnest is not responsible for lost, expired, deleted, damaged, inaccessible, or unrecoverable files.
+
+3. CONFIDENTIAL FILES
+
+Users should not upload highly confidential, sensitive, private, regulated, or legally protected files unless they fully understand and accept the risks of online file transfer.
+
+This includes, but is not limited to:
+
+- passwords or login credentials
+- government identification documents
+- banking or financial records
+- medical or health records
+- legal documents
+- private business documents
+- personal photographs or videos
+- confidential client files
+- trade secrets
+- any file the user cannot afford to lose or expose
+
+If confidential files are uploaded, the user is responsible for deleting them, ensuring they are no longer needed, and making sure they are not shared with the wrong person.
+
+4. CONFIDENTIALITY
+
+Sendnest is designed to help users transfer files privately and temporarily.
+
+We aim to keep uploaded files confidential and not intentionally access, sell, share, publish, or distribute user files.
+
+However, no internet-connected service can guarantee absolute security or absolute confidentiality. By using Sendnest, you understand that file transfer over the internet carries risk.
+
+Users are responsible for choosing what they upload and who they share access with.
+
+5. USER RESPONSIBILITY
+
+You are fully responsible for:
+
+- the files you upload
+- the people you share transfer codes or links with
+- downloading your files before they expire
+- keeping backup copies of important files
+- ensuring you have the right to upload and share each file
+- deleting sensitive or confidential files when they are no longer needed
+- using Sendnest in a lawful and responsible way
+
+You agree not to use Sendnest to upload, transfer, store, or distribute illegal, harmful, abusive, stolen, copyrighted without permission, malicious, or unauthorized material.
+
+6. NO WARRANTY
+
+Sendnest is provided “as is” and “as available.”
+
+We do not guarantee that the app will always be available, uninterrupted, error-free, secure, or free from bugs.
+
+We do not guarantee that files will always upload, download, remain available, remain unchanged, or be recoverable.
+
+7. LIMITATION OF LIABILITY
+
+To the fullest extent allowed by law, Sendnest, its owner, developers, operators, and affiliates are not responsible for any loss, damage, claim, cost, or consequence caused by using or being unable to use the app.
+
+This includes, but is not limited to:
+
+- deleted files
+- lost files
+- expired files
+- failed uploads
+- failed downloads
+- incorrect sharing
+- unauthorized access
+- data loss
+- business loss
+- personal loss
+- financial loss
+- legal consequences
+- device issues
+- service interruption
+- user mistakes
+
+By using Sendnest, you accept full responsibility for your own use of the application.
+
+8. FILE DELETION
+
+Sendnest may delete files automatically, manually, or as part of maintenance, cleanup, storage limits, abuse prevention, or technical operations.
+
+Once files are deleted, they may not be recoverable.
+
+Users should not rely on Sendnest as the only copy of any file.
+
+9. UPDATES AND CHANGES
+
+We may update, modify, suspend, or discontinue Sendnest at any time.
+
+We may also update these terms from time to time. Continued use of the app means you accept the updated terms.
+
+10. ACCEPTANCE
+
+By installing or using Sendnest, you confirm that you have read, understood, and accepted this agreement.

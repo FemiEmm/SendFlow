@@ -34,6 +34,8 @@ const isDarkMode = ref(false)
 const isMobile = ref(window.innerWidth <= 640)
 const deliveryCount = ref(0)
 
+const publicAsset = (path) => `${import.meta.env.BASE_URL}${path}`
+
 watch(
   () => props.startTab,
   (newTab) => {
@@ -97,23 +99,23 @@ const heroText = computed(() => {
 
 const heroImage = computed(() => {
   if (!isMobile.value) {
-    return '/images/hero-transfer.png'
+    return publicAsset('images/hero-transfer.png')
   }
 
   if (activeTab.value === 'send') {
-    return '/images/hero-transfer.png'
+    return publicAsset('images/hero-transfer.png')
   }
 
   if (activeTab.value === 'help') {
-    return '/images/hero-transfer-3.png'
+    return publicAsset('images/hero-transfer-3.png')
   }
 
-  return '/images/hero-transfer-2.png'
+  return publicAsset('images/hero-transfer-2.png')
 })
 
 const shareApp = async () => {
   const shareData = {
-    title: 'Sendnext',
+    title: 'Sendnest',
     text: 'Send files between devices with a simple transfer code.',
     url: window.location.href
   }
